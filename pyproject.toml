@@ -1,0 +1,55 @@
+[build-system]
+requires = ["maturin>=1.5,<2.0"]
+build-backend = "maturin"
+
+[project]
+name = "mongojet"
+description = "Async MongoDB client for Python"
+authors = [{name = "Roman Snegirev", email = "snegiryev@gmail.com"}]
+requires-python = ">=3.8"
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Programming Language :: Rust",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3 :: Only",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Operating System :: MacOS",
+    "Operating System :: Microsoft",
+    "Operating System :: POSIX :: Linux",
+    "Topic :: Database",
+    "Topic :: Database :: Front-Ends",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: Apache Software License",
+]
+dynamic = ["version"]
+dependencies = ["pymongo>=4.6.2", "typing_extensions>=4.10.0",]
+
+[project.urls]
+homepage = "https://github.com/romis2012/mongojet"
+repository = "https://github.com/romis2012/mongojet"
+
+[tool.maturin]
+features = ["pyo3/extension-module"]
+python-source = "python"
+
+[tool.black]
+line-length = 88
+target-version = ["py39", "py310", "py311", "py312"]
+skip-string-normalization = true
+preview = true
+verbose = true
+
+[tool.flake8]
+max-line-length = 88
+ignore = "E203,W503"
+
+[tool.pytest.ini_options]
+asyncio_mode = "strict"
+
+
+
