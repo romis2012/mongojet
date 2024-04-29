@@ -38,7 +38,7 @@ jobs:
           args: --release --out dist --find-interpreter
           sccache: 'true'
           manylinux: auto
-      - name: Build wheels aarch64
+      - name: Build wheels aarch64  # https://github.com/PyO3/maturin-action/issues/222
         if: matrix.target == 'aarch64'
         uses: PyO3/maturin-action@v1
         with:
