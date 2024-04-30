@@ -2,16 +2,6 @@ import pytest
 from mongojet import Client, ReadConcern, WriteConcern, ReadPreference, Database
 
 
-@pytest.mark.asyncio
-async def test_foo(client):
-    print(client)
-
-
-@pytest.mark.asyncio
-async def test_bar(db):
-    print(db)
-
-
 def test_database_options(client: Client):
     read_concern = ReadConcern(level='local')
     write_concern = WriteConcern(w='majority', wtimeout=360, j=True)
