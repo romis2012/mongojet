@@ -7,11 +7,11 @@ name: Release
 
 on:
   push:
-    branches:
-      - main
-      - master
+#    branches:
+#      - main
+#      - master
     tags:
-      - v*
+      - 'v*'
 #  pull_request:
 #  workflow_dispatch:
 
