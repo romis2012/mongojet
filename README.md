@@ -152,3 +152,19 @@ print(result)
 #> {'deleted_count': 94}
 ```
 
+### Working with GridFS
+```python
+bucket = db.gridfs_bucket(bucket_name="images")
+
+with open('/path/to/my/awesome/image.png', mode='rb') as file:
+    data = file.read()
+    result = await bucket.put(data, filename='image.png', content_type='image/png')
+    file_id = result['file_id']
+
+with open('/path/to/my/awesome/image_copy.png', mode='wb') as file:
+    data = await bucket.get_by_id(file_id)
+    file.write(data)
+
+await bucket.delete(file_id)
+```
+
