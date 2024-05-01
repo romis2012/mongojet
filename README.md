@@ -3,10 +3,11 @@
 [![CI](https://github.com/romis2012/mongojet/actions/workflows/python-ci.yml/badge.svg)](https://github.com/romis2012/mongojet/actions/workflows/python-ci.yml)
 [![Coverage Status](https://codecov.io/gh/romis2012/mongojet/branch/master/graph/badge.svg)](https://codecov.io/gh/romis2012/mongojet)
 [![PyPI version](https://badge.fury.io/py/mongojet.svg)](https://pypi.python.org/pypi/mongojet)
+[![versions](https://img.shields.io/pypi/pyversions/mongojet.svg)](https://github.com/romis2012/mongojet)
 
 Async (asyncio) MongoDB client for Python. 
 It uses [Rust MongoDB driver](https://github.com/mongodb/mongo-rust-driver) and [tokio](https://github.com/tokio-rs/tokio) under the hood.
-Mongojet is 1.5-4x faster than Motor in simple benchmarks.
+Mongojet is 2-4x faster than Motor in high concurrency scenarios.
 
 ## Requirements
 - Python >= 3.8
