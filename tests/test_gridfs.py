@@ -1,12 +1,12 @@
 import pytest
 from bson import ObjectId
 
-from mongojet import Database, NoFile, FileExists
+from mongojet import Database, NoFile, FileExists, GridfsBucket
 
 
 @pytest.mark.asyncio
 async def test_gridfs(db: Database):
-    bucket = db.gridfs_bucket(bucket_name="files")
+    bucket: GridfsBucket = db.gridfs_bucket(bucket_name="files")
 
     file_id = ObjectId()
     file_name = 'some name'

@@ -1,6 +1,7 @@
 from ._client import create_client, Client
 from ._database import Database
 from ._collection import Collection
+from ._gridfs import GridfsBucket
 
 from .mongojet import (
     PyMongoError,
