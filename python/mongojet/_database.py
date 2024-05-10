@@ -41,22 +41,6 @@ class Database:
         self._codec = Codec(options=codec_options)
         self._codec_options = codec_options
 
-    def __getitem__(self, name: str) -> Collection:
-        core_collection = self._core_database.get_collection(name)
-        return Collection(
-            core_collection,
-            codec_options=self._codec_options,
-            database=self,
-        )
-
-    def __getattr__(self, name: str) -> Collection:
-        if name.startswith("_"):
-            raise AttributeError(
-                f"Database has no attribute {name!r}. To access the {name}"
-                f" collection, use database[{name!r}]."
-            )
-        return self.__getitem__(name)
-
     def get_collection(
         self,
         name: str,
@@ -203,3 +187,19 @@ class Database:
     @property
     def client(self) -> Client:
         return self._client
+
+    def __getitem__(self, name: str) -> Collection:
+        core_collection = self._core_database.get_collection(name)
+        return Collection(
+            core_collection,
+            codec_options=self._codec_options,
+            database=self,
+        )
+
+    def __getattr__(self, name: str) -> Collection:
+        if name.startswith("_"):  # pragma: no cover
+            raise AttributeError(
+                f"Database has no attribute {name!r}. To access the {name}"
+                f" collection, use database[{name!r}]."
+            )
+        return self.__getitem__(name)

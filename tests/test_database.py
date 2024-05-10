@@ -2,6 +2,16 @@ import pytest
 from mongojet import Client, ReadConcern, WriteConcern, ReadPreference, Database
 
 
+def test_get_database(client: Client):
+    db_name = 'db_name'
+    db1 = client.get_database(db_name)
+    db2 = client[db_name]
+    db3 = client.db_name
+
+    assert db1.name == db2.name == db3.name == db_name
+    assert db1.client is db2.client is db3.client
+
+
 def test_database_options(client: Client):
     read_concern = ReadConcern(level='local')
     write_concern = WriteConcern(w='majority', wtimeout=360, j=True)

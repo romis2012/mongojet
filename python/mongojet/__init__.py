@@ -51,6 +51,7 @@ __all__ = (
     'ReadPreference',
     'IndexModel',
     'IndexModelDef',
+    'GridfsBucket',
     'GridFSError',
     'NoFile',
     'FileExists',

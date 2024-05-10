@@ -86,3 +86,14 @@ class Client:
             await self._core_client.shutdown_immediate()
         else:
             await self._core_client.shutdown()
+
+    def __getitem__(self, name: str) -> Database:
+        return self.get_database(name)
+
+    def __getattr__(self, name: str) -> Database:
+        if name.startswith("_"):  # pragma: no cover
+            raise AttributeError(
+                f"Client has no attribute {name!r}. To access the {name}"
+                f" database, use client[{name!r}]."
+            )
+        return self.__getitem__(name)
