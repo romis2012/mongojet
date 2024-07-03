@@ -23,6 +23,7 @@ impl CoreGridFsBucket {
 
 #[pymethods]
 impl CoreGridFsBucket {
+    #[pyo3(signature = (data, options=None, metadata=None))]
     pub async fn put(
         &self,
         data: Vec<u8>,

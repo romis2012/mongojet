@@ -63,6 +63,7 @@ impl CoreClient {
         Ok(CoreDatabase::new(db))
     }
 
+    #[pyo3(signature = (options=None))]
     pub async fn start_session(
         &self,
         options: Option<CoreSessionOptions>,

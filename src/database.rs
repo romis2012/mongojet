@@ -70,6 +70,7 @@ impl CoreDatabase {
         Ok(CoreCollection::new(col))
     }
 
+    #[pyo3(signature = (name, options=None))]
     pub async fn create_collection(
         &self,
         name: String,
@@ -92,6 +93,7 @@ impl CoreDatabase {
         spawn(fut).await?
     }
 
+    #[pyo3(signature = (session, name, options=None))]
     pub async fn create_collection_with_session(
         &self,
         session: Py<CoreSession>,
@@ -124,6 +126,7 @@ impl CoreDatabase {
         spawn(fut).await?
     }
 
+    #[pyo3(signature = (filter=None, options=None))]
     pub async fn list_collections(
         &self,
         filter: Option<CoreDocument>,
@@ -157,6 +160,7 @@ impl CoreDatabase {
         spawn(fut).await?
     }
 
+    #[pyo3(signature = (session, filter=None, options=None))]
     pub async fn list_collections_with_session(
         &self,
         session: Py<CoreSession>,
@@ -196,6 +200,7 @@ impl CoreDatabase {
         spawn(fut).await?
     }
 
+    #[pyo3(signature = (command, options=None))]
     pub async fn run_command(
         &self,
         command: CoreDocument,
@@ -223,6 +228,7 @@ impl CoreDatabase {
         spawn(fut).await?
     }
 
+    #[pyo3(signature = (session, command, options=None))]
     pub async fn run_command_with_session(
         &self,
         session: Py<CoreSession>,
@@ -260,6 +266,7 @@ impl CoreDatabase {
         spawn(fut).await?
     }
 
+    #[pyo3(signature = (pipeline, options=None))]
     pub async fn aggregate(
         &self,
         pipeline: CorePipeline,
@@ -286,6 +293,7 @@ impl CoreDatabase {
         spawn(fut).await?
     }
 
+    #[pyo3(signature = (session, pipeline, options=None))]
     pub async fn aggregate_with_session(
         &self,
         session: Py<CoreSession>,
@@ -318,6 +326,7 @@ impl CoreDatabase {
         spawn(fut).await?
     }
 
+    #[pyo3(signature = (options=None))]
     pub fn gridfs_bucket(
         &self,
         options: Option<CoreGridFsBucketOptions>,
@@ -331,6 +340,7 @@ impl CoreDatabase {
         Ok(CoreGridFsBucket::new(bucket))
     }
 
+    #[pyo3(signature = (options=None))]
     pub async fn drop(&self, options: Option<CoreDropDatabaseOptions>) -> PyResult<()> {
         let db = self.db.clone();
 
@@ -346,6 +356,7 @@ impl CoreDatabase {
         spawn(fut).await?
     }
 
+    #[pyo3(signature = (session, options=None))]
     pub async fn drop_with_session(
         &self,
         session: Py<CoreSession>,

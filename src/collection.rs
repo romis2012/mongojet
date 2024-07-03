@@ -57,6 +57,7 @@ impl CoreCollection {
 
 #[pymethods]
 impl CoreCollection {
+    #[pyo3(signature = (filter=None, options=None))]
     pub async fn find_one(
         &self,
         filter: Option<CoreDocument>,
@@ -85,6 +86,7 @@ impl CoreCollection {
         spawn(fut).await?
     }
 
+    #[pyo3(signature = (session, filter=None, options=None))]
     pub async fn find_one_with_session(
         &self,
         session: Py<CoreSession>,
@@ -116,6 +118,7 @@ impl CoreCollection {
         spawn(fut).await?
     }
 
+    #[pyo3(signature = (filter, update, options=None))]
     pub async fn find_one_and_update(
         &self,
         filter: CoreDocument,
@@ -146,6 +149,7 @@ impl CoreCollection {
         spawn(fut).await?
     }
 
+    #[pyo3(signature = (session, filter, update, options=None))]
     pub async fn find_one_and_update_with_session(
         &self,
         session: Py<CoreSession>,
@@ -184,6 +188,7 @@ impl CoreCollection {
         spawn(fut).await?
     }
 
+    #[pyo3(signature = (filter, replacement, options=None))]
     pub async fn find_one_and_replace(
         &self,
         filter: CoreDocument,
@@ -214,6 +219,7 @@ impl CoreCollection {
         spawn(fut).await?
     }
 
+    #[pyo3(signature = (session, filter, replacement, options=None))]
     pub async fn find_one_and_replace_with_session(
         &self,
         session: Py<CoreSession>,
@@ -252,6 +258,7 @@ impl CoreCollection {
         spawn(fut).await?
     }
 
+    #[pyo3(signature = (filter, options=None))]
     pub async fn find_one_and_delete(
         &self,
         filter: CoreDocument,
@@ -279,6 +286,7 @@ impl CoreCollection {
         spawn(fut).await?
     }
 
+    #[pyo3(signature = (session, filter, options=None))]
     pub async fn find_one_and_delete_with_session(
         &self,
         session: Py<CoreSession>,
@@ -314,6 +322,7 @@ impl CoreCollection {
         spawn(fut).await?
     }
 
+    #[pyo3(signature = (filter=None, options=None))]
     pub async fn find(
         &self,
         filter: Option<CoreDocument>,
@@ -341,6 +350,7 @@ impl CoreCollection {
         spawn(fut).await?
     }
 
+    #[pyo3(signature = (session, filter=None, options=None))]
     pub async fn find_with_session(
         &self,
         session: Py<CoreSession>,
@@ -371,6 +381,7 @@ impl CoreCollection {
         spawn(fut).await?
     }
 
+    #[pyo3(signature = (filter=None, options=None))]
     pub async fn find_many(
         &self,
         filter: Option<CoreDocument>,
@@ -404,6 +415,7 @@ impl CoreCollection {
         spawn(fut).await?
     }
 
+    #[pyo3(signature = (session, filter=None, options=None))]
     pub async fn find_many_with_session(
         &self,
         session: Py<CoreSession>,
@@ -443,6 +455,7 @@ impl CoreCollection {
         spawn(fut).await?
     }
 
+    #[pyo3(signature = (pipeline, options=None))]
     pub async fn aggregate(
         &self,
         pipeline: CorePipeline,
@@ -469,6 +482,7 @@ impl CoreCollection {
         spawn(fut).await?
     }
 
+    #[pyo3(signature = (session, pipeline, options=None))]
     pub async fn aggregate_with_session(
         &self,
         session: Py<CoreSession>,
@@ -501,6 +515,7 @@ impl CoreCollection {
         spawn(fut).await?
     }
 
+    #[pyo3(signature = (field_name, filter=None, options=None))]
     pub async fn distinct(
         &self,
         field_name: String,
@@ -530,6 +545,7 @@ impl CoreCollection {
         spawn(fut).await?
     }
 
+    #[pyo3(signature = (session, field_name, filter=None, options=None))]
     pub async fn distinct_with_session(
         &self,
         session: Py<CoreSession>,
@@ -567,6 +583,7 @@ impl CoreCollection {
         spawn(fut).await?
     }
 
+    #[pyo3(signature = (filter, update, options=None))]
     pub async fn update_one(
         &self,
         filter: CoreDocument,
@@ -599,6 +616,7 @@ impl CoreCollection {
         spawn(fut).await?
     }
 
+    #[pyo3(signature = (session, filter, update, options=None))]
     pub async fn update_one_with_session(
         &self,
         session: Py<CoreSession>,
@@ -637,6 +655,7 @@ impl CoreCollection {
         spawn(fut).await?
     }
 
+    #[pyo3(signature = (filter, update, options=None))]
     pub async fn update_many(
         &self,
         filter: CoreDocument,
@@ -667,6 +686,7 @@ impl CoreCollection {
         spawn(fut).await?
     }
 
+    #[pyo3(signature = (session, filter, update, options=None))]
     pub async fn update_many_with_session(
         &self,
         session: Py<CoreSession>,
@@ -705,6 +725,7 @@ impl CoreCollection {
         spawn(fut).await?
     }
 
+    #[pyo3(signature = (document, options=None))]
     pub async fn insert_one(
         &self,
         document: CoreRawDocument,
@@ -733,6 +754,7 @@ impl CoreCollection {
         spawn(fut).await?
     }
 
+    #[pyo3(signature = (session, document, options=None))]
     pub async fn insert_one_with_session(
         &self,
         session: Py<CoreSession>,
@@ -764,6 +786,7 @@ impl CoreCollection {
         spawn(fut).await?
     }
 
+    #[pyo3(signature = (documents, options=None))]
     pub async fn insert_many(
         &self,
         documents: Vec<CoreRawDocument>,
@@ -792,6 +815,7 @@ impl CoreCollection {
         spawn(fut).await?
     }
 
+    #[pyo3(signature = (session, documents, options=None))]
     pub async fn insert_many_with_session(
         &self,
         session: Py<CoreSession>,
@@ -827,6 +851,7 @@ impl CoreCollection {
         spawn(fut).await?
     }
 
+    #[pyo3(signature = (filter, replacement, options=None))]
     pub async fn replace_one(
         &self,
         filter: CoreDocument,
@@ -857,6 +882,7 @@ impl CoreCollection {
         spawn(fut).await?
     }
 
+    #[pyo3(signature = (session, filter, replacement, options=None))]
     pub async fn replace_one_with_session(
         &self,
         session: Py<CoreSession>,
@@ -895,6 +921,7 @@ impl CoreCollection {
         spawn(fut).await?
     }
 
+    #[pyo3(signature = (filter, options=None))]
     pub async fn delete_one(
         &self,
         filter: CoreDocument,
@@ -923,6 +950,7 @@ impl CoreCollection {
         spawn(fut).await?
     }
 
+    #[pyo3(signature = (session, filter, options=None))]
     pub async fn delete_one_with_session(
         &self,
         session: Py<CoreSession>,
@@ -954,6 +982,7 @@ impl CoreCollection {
         spawn(fut).await?
     }
 
+    #[pyo3(signature = (filter, options=None))]
     pub async fn delete_many(
         &self,
         filter: CoreDocument,
@@ -982,6 +1011,7 @@ impl CoreCollection {
         spawn(fut).await?
     }
 
+    #[pyo3(signature = (session, filter, options=None))]
     pub async fn delete_many_with_session(
         &self,
         session: Py<CoreSession>,
@@ -1013,6 +1043,7 @@ impl CoreCollection {
         spawn(fut).await?
     }
 
+    #[pyo3(signature = (filter=None, options=None))]
     pub async fn count_documents(
         &self,
         filter: Option<CoreDocument>,
@@ -1040,6 +1071,7 @@ impl CoreCollection {
         spawn(fut).await?
     }
 
+    #[pyo3(signature = (session, filter=None, options=None))]
     pub async fn count_documents_with_session(
         &self,
         session: Py<CoreSession>,
@@ -1074,6 +1106,7 @@ impl CoreCollection {
         spawn(fut).await?
     }
 
+    #[pyo3(signature = (options=None))]
     pub async fn estimated_document_count(
         &self,
         options: Option<CoreEstimatedCountOptions>,
@@ -1099,6 +1132,7 @@ impl CoreCollection {
         spawn(fut).await?
     }
 
+    #[pyo3(signature = (model, options=None))]
     pub async fn create_index(
         &self,
         model: CoreIndexModel,
@@ -1128,6 +1162,7 @@ impl CoreCollection {
         spawn(fut).await?
     }
 
+    #[pyo3(signature = (session, model, options=None))]
     pub async fn create_index_with_session(
         &self,
         session: Py<CoreSession>,
@@ -1159,6 +1194,7 @@ impl CoreCollection {
         spawn(fut).await?
     }
 
+    #[pyo3(signature = (model, options=None))]
     pub async fn create_indexes(
         &self,
         model: Vec<CoreIndexModel>,
@@ -1187,6 +1223,7 @@ impl CoreCollection {
         spawn(fut).await?
     }
 
+    #[pyo3(signature = (session, model, options=None))]
     pub async fn create_indexes_with_session(
         &self,
         session: Py<CoreSession>,
@@ -1218,6 +1255,7 @@ impl CoreCollection {
         spawn(fut).await?
     }
 
+    #[pyo3(signature = (name, options=None))]
     pub async fn drop_index(
         &self,
         name: String,
@@ -1244,6 +1282,7 @@ impl CoreCollection {
         spawn(fut).await?
     }
 
+    #[pyo3(signature = (session, name, options=None))]
     pub async fn drop_index_with_session(
         &self,
         session: Py<CoreSession>,
@@ -1273,6 +1312,7 @@ impl CoreCollection {
         spawn(fut).await?
     }
 
+    #[pyo3(signature = (options=None))]
     pub async fn drop_indexes(&self, options: Option<CoreDropIndexOptions>) -> PyResult<()> {
         let collection = self.collection.clone();
 
@@ -1292,6 +1332,7 @@ impl CoreCollection {
         spawn(fut).await?
     }
 
+    #[pyo3(signature = (session, options=None))]
     pub async fn drop_indexes_with_session(
         &self,
         session: Py<CoreSession>,
@@ -1320,6 +1361,7 @@ impl CoreCollection {
         spawn(fut).await?
     }
 
+    #[pyo3(signature = (options=None))]
     pub async fn list_indexes(
         &self,
         options: Option<CoreListIndexesOptions>,
@@ -1348,6 +1390,7 @@ impl CoreCollection {
         spawn(fut).await?
     }
 
+    #[pyo3(signature = (session, options=None))]
     pub async fn list_indexes_with_session(
         &self,
         session: Py<CoreSession>,
@@ -1384,6 +1427,7 @@ impl CoreCollection {
         spawn(fut).await?
     }
 
+    #[pyo3(signature = (options=None))]
     pub async fn drop(&self, options: Option<CoreDropCollectionOptions>) -> PyResult<()> {
         let collection = self.collection.clone();
 
@@ -1403,6 +1447,7 @@ impl CoreCollection {
         spawn(fut).await?
     }
 
+    #[pyo3(signature = (session, options=None))]
     pub async fn drop_with_session(
         &self,
         session: Py<CoreSession>,
