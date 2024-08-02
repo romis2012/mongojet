@@ -5,8 +5,8 @@ use crate::runtime::spawn;
 use bson::{doc, Document};
 use futures::{AsyncReadExt, AsyncWriteExt};
 use log::debug;
+use mongodb::gridfs::GridFsBucket;
 use mongodb::options::GridFsUploadOptions;
-use mongodb::GridFsBucket;
 use pyo3::prelude::*;
 use pyo3::types::PyBytes;
 
@@ -46,9 +46,18 @@ impl CoreGridFsBucket {
 
         let fut = async move {
             let mut upload_stream = if let Some(id) = file_id {
-                bucket.open_upload_stream_with_id(id, filename, upload_options)
+                bucket
+                    .open_upload_stream(filename)
+                    .id(id)
+                    .with_options(upload_options)
+                    .await
+                    .map_err(|e| MongoError::from(e))?
             } else {
-                bucket.open_upload_stream(filename, upload_options)
+                bucket
+                    .open_upload_stream(filename)
+                    .with_options(upload_options)
+                    .await
+                    .map_err(|e| MongoError::from(e))?
             };
 
             upload_stream
@@ -106,7 +115,7 @@ impl CoreGridFsBucket {
         let fut = async move {
             let mut buf = Vec::new();
             let mut download_stream = bucket
-                .open_download_stream_by_name(filename, None)
+                .open_download_stream_by_name(filename)
                 .await
                 .map_err(|e| MongoError::from(e))?;
             download_stream

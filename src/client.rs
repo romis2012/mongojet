@@ -75,7 +75,8 @@ impl CoreClient {
 
         let fut = async move {
             let s = c
-                .start_session(options)
+                .start_session()
+                .with_options(options)
                 .await
                 .map_err(|e| MongoError::from(e))?;
             Ok(CoreSession::new(s))
@@ -102,7 +103,7 @@ impl CoreClient {
         debug!("Client.shutdown_immediate");
 
         let fut = async move {
-            client.shutdown_immediate().await;
+            client.shutdown().immediate(true).await;
             Ok(())
         };
 

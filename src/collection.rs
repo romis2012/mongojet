@@ -75,7 +75,8 @@ impl CoreCollection {
 
         let fut = async move {
             let result: Option<CoreRawDocument> = collection
-                .find_one(filter, options)
+                .find_one(filter.unwrap_or_default())
+                .with_options(options)
                 .await
                 .map_err(|e| MongoError::from(e))?
                 .map(Into::into);
@@ -107,7 +108,9 @@ impl CoreCollection {
 
         let fut = async move {
             let result: Option<CoreRawDocument> = collection
-                .find_one_with_session(filter, options, &mut session.lock().await.deref_mut())
+                .find_one(filter.unwrap_or_default())
+                .with_options(options)
+                .session(session.lock().await.deref_mut())
                 .await
                 .map_err(|e| MongoError::from(e))?
                 .map(Into::into);
@@ -138,7 +141,8 @@ impl CoreCollection {
 
         let fut = async move {
             let result: Option<CoreRawDocument> = collection
-                .find_one_and_update(filter, update, options)
+                .find_one_and_update(filter, update)
+                .with_options(options)
                 .await
                 .map_err(|e| MongoError::from(e))?
                 .map(Into::into);
@@ -172,12 +176,9 @@ impl CoreCollection {
 
         let fut = async move {
             let result: Option<CoreRawDocument> = collection
-                .find_one_and_update_with_session(
-                    filter,
-                    update,
-                    options,
-                    &mut session.lock().await.deref_mut(),
-                )
+                .find_one_and_update(filter, update)
+                .with_options(options)
+                .session(session.lock().await.deref_mut())
                 .await
                 .map_err(|e| MongoError::from(e))?
                 .map(Into::into);
@@ -208,7 +209,8 @@ impl CoreCollection {
 
         let fut = async move {
             let result: Option<CoreRawDocument> = collection
-                .find_one_and_replace(filter, replacement, options)
+                .find_one_and_replace(filter, replacement)
+                .with_options(options)
                 .await
                 .map_err(|e| MongoError::from(e))?
                 .map(Into::into);
@@ -242,12 +244,9 @@ impl CoreCollection {
 
         let fut = async move {
             let result: Option<CoreRawDocument> = collection
-                .find_one_and_replace_with_session(
-                    filter,
-                    replacement,
-                    options,
-                    &mut session.lock().await.deref_mut(),
-                )
+                .find_one_and_replace(filter, replacement)
+                .with_options(options)
+                .session(session.lock().await.deref_mut())
                 .await
                 .map_err(|e| MongoError::from(e))?
                 .map(Into::into);
@@ -275,7 +274,8 @@ impl CoreCollection {
         );
         let fut = async move {
             let result: Option<CoreRawDocument> = collection
-                .find_one_and_delete(filter, options)
+                .find_one_and_delete(filter)
+                .with_options(options)
                 .await
                 .map_err(|e| MongoError::from(e))?
                 .map(Into::into);
@@ -307,11 +307,9 @@ impl CoreCollection {
 
         let fut = async move {
             let result: Option<CoreRawDocument> = collection
-                .find_one_and_delete_with_session(
-                    filter,
-                    options,
-                    &mut session.lock().await.deref_mut(),
-                )
+                .find_one_and_delete(filter)
+                .with_options(options)
+                .session(session.lock().await.deref_mut())
                 .await
                 .map_err(|e| MongoError::from(e))?
                 .map(Into::into);
@@ -340,7 +338,8 @@ impl CoreCollection {
 
         let fut = async move {
             let cur = collection
-                .find(filter, options)
+                .find(filter.unwrap_or_default())
+                .with_options(options)
                 .await
                 .map_err(|e| MongoError::from(e))?;
 
@@ -371,7 +370,9 @@ impl CoreCollection {
 
         let fut = async move {
             let cur = collection
-                .find_with_session(filter, options, &mut session.lock().await.deref_mut())
+                .find(filter.unwrap_or_default())
+                .with_options(options)
+                .session(session.lock().await.deref_mut())
                 .await
                 .map_err(|e| MongoError::from(e))?;
 
@@ -399,7 +400,8 @@ impl CoreCollection {
 
         let fut = async move {
             let docs: Vec<CoreRawDocument> = collection
-                .find(filter, options)
+                .find(filter.unwrap_or_default())
+                .with_options(options)
                 .await
                 .map_err(|e| MongoError::from(e))?
                 .try_collect::<Vec<_>>()
@@ -438,7 +440,9 @@ impl CoreCollection {
             let mut session = session.lock().await;
 
             let docs: Vec<CoreRawDocument> = collection
-                .find_with_session(filter, options, &mut session.deref_mut())
+                .find(filter.unwrap_or_default())
+                .with_options(options)
+                .session(session.deref_mut())
                 .await
                 .map_err(|e| MongoError::from(e))?
                 .stream(&mut session.deref_mut())
@@ -472,7 +476,8 @@ impl CoreCollection {
 
         let fut = async move {
             let cur = collection
-                .aggregate(pipeline, options)
+                .aggregate(pipeline)
+                .with_options(options)
                 .await
                 .map_err(|e| MongoError::from(e))?;
 
@@ -502,7 +507,9 @@ impl CoreCollection {
 
         let fut = async move {
             let cur = collection
-                .aggregate_with_session(pipeline, options, &mut session.lock().await.deref_mut())
+                .aggregate(pipeline)
+                .with_options(options)
+                .session(session.lock().await.deref_mut())
                 .await
                 .map_err(|e| MongoError::from(e))?;
 
@@ -534,7 +541,8 @@ impl CoreCollection {
 
         let fut = async move {
             let result: CoreDistinctResult = collection
-                .distinct(field_name, filter, options)
+                .distinct(field_name, filter.unwrap_or_default())
+                .with_options(options)
                 .await
                 .map_err(|e| MongoError::from(e))?
                 .into();
@@ -567,12 +575,9 @@ impl CoreCollection {
 
         let fut = async move {
             let result: CoreDistinctResult = collection
-                .distinct_with_session(
-                    field_name,
-                    filter,
-                    options,
-                    &mut session.lock().await.deref_mut(),
-                )
+                .distinct(field_name, filter.unwrap_or_default())
+                .with_options(options)
+                .session(session.lock().await.deref_mut())
                 .await
                 .map_err(|e| MongoError::from(e))?
                 .into();
@@ -605,7 +610,8 @@ impl CoreCollection {
 
         let fut = async move {
             let result: CoreUpdateResult = collection
-                .update_one(filter, update, options)
+                .update_one(filter, update)
+                .with_options(options)
                 .await
                 .map_err(|e| MongoError::from(e))?
                 .into();
@@ -639,12 +645,9 @@ impl CoreCollection {
 
         let fut = async move {
             let result: CoreUpdateResult = collection
-                .update_one_with_session(
-                    filter,
-                    update,
-                    options,
-                    &mut session.lock().await.deref_mut(),
-                )
+                .update_one(filter, update)
+                .with_options(options)
+                .session(session.lock().await.deref_mut())
                 .await
                 .map_err(|e| MongoError::from(e))?
                 .into();
@@ -675,7 +678,8 @@ impl CoreCollection {
 
         let fut = async move {
             let result: CoreUpdateResult = collection
-                .update_many(filter, update, options)
+                .update_many(filter, update)
+                .with_options(options)
                 .await
                 .map_err(|e| MongoError::from(e))?
                 .into();
@@ -709,12 +713,9 @@ impl CoreCollection {
 
         let fut = async move {
             let result: CoreUpdateResult = collection
-                .update_many_with_session(
-                    filter,
-                    update,
-                    options,
-                    &mut session.lock().await.deref_mut(),
-                )
+                .update_many(filter, update)
+                .with_options(options)
+                .session(session.lock().await.deref_mut())
                 .await
                 .map_err(|e| MongoError::from(e))?
                 .into();
@@ -743,7 +744,8 @@ impl CoreCollection {
 
         let fut = async move {
             let result: CoreInsertOneResult = collection
-                .insert_one(document, options)
+                .insert_one(document)
+                .with_options(options)
                 .await
                 .map_err(|e| MongoError::from(e))?
                 .into();
@@ -775,7 +777,9 @@ impl CoreCollection {
 
         let fut = async move {
             let result: CoreInsertOneResult = collection
-                .insert_one_with_session(document, options, &mut session.lock().await.deref_mut())
+                .insert_one(document)
+                .with_options(options)
+                .session(session.lock().await.deref_mut())
                 .await
                 .map_err(|e| MongoError::from(e))?
                 .into();
@@ -804,7 +808,8 @@ impl CoreCollection {
 
         let fut = async move {
             let result: CoreInsertManyResult = collection
-                .insert_many(documents, options)
+                .insert_many(documents)
+                .with_options(options)
                 .await
                 .map_err(|e| MongoError::from(e))?
                 .into();
@@ -836,11 +841,9 @@ impl CoreCollection {
 
         let fut = async move {
             let result: CoreInsertManyResult = collection
-                .insert_many_with_session(
-                    documents,
-                    options,
-                    &mut session.lock().await.deref_mut(),
-                )
+                .insert_many(documents)
+                .with_options(options)
+                .session(session.lock().await.deref_mut())
                 .await
                 .map_err(|e| MongoError::from(e))?
                 .into();
@@ -871,7 +874,8 @@ impl CoreCollection {
 
         let fut = async move {
             let result: CoreUpdateResult = collection
-                .replace_one(filter, replacement, options)
+                .replace_one(filter, replacement)
+                .with_options(options)
                 .await
                 .map_err(|e| MongoError::from(e))?
                 .into();
@@ -905,12 +909,9 @@ impl CoreCollection {
 
         let fut = async move {
             let result: CoreUpdateResult = collection
-                .replace_one_with_session(
-                    filter,
-                    replacement,
-                    options,
-                    &mut session.lock().await.deref_mut(),
-                )
+                .replace_one(filter, replacement)
+                .with_options(options)
+                .session(session.lock().await.deref_mut())
                 .await
                 .map_err(|e| MongoError::from(e))?
                 .into();
@@ -939,7 +940,8 @@ impl CoreCollection {
 
         let fut = async move {
             let result: CoreDeleteResult = collection
-                .delete_one(filter, options)
+                .delete_one(filter)
+                .with_options(options)
                 .await
                 .map_err(|e| MongoError::from(e))?
                 .into();
@@ -971,7 +973,9 @@ impl CoreCollection {
 
         let fut = async move {
             let result: CoreDeleteResult = collection
-                .delete_one_with_session(filter, options, &mut session.lock().await.deref_mut())
+                .delete_one(filter)
+                .with_options(options)
+                .session(session.lock().await.deref_mut())
                 .await
                 .map_err(|e| MongoError::from(e))?
                 .into();
@@ -1000,7 +1004,8 @@ impl CoreCollection {
 
         let fut = async move {
             let result: CoreDeleteResult = collection
-                .delete_many(filter, options)
+                .delete_many(filter)
+                .with_options(options)
                 .await
                 .map_err(|e| MongoError::from(e))?
                 .into();
@@ -1032,7 +1037,9 @@ impl CoreCollection {
 
         let fut = async move {
             let result: CoreDeleteResult = collection
-                .delete_many_with_session(filter, options, &mut session.lock().await.deref_mut())
+                .delete_many(filter)
+                .with_options(options)
+                .session(session.lock().await.deref_mut())
                 .await
                 .map_err(|e| MongoError::from(e))?
                 .into();
@@ -1061,7 +1068,8 @@ impl CoreCollection {
 
         let fut = async move {
             let result = collection
-                .count_documents(filter, options)
+                .count_documents(filter.unwrap_or_default())
+                .with_options(options)
                 .await
                 .map_err(|e| MongoError::from(e))?;
 
@@ -1092,11 +1100,9 @@ impl CoreCollection {
 
         let fut = async move {
             let result = collection
-                .count_documents_with_session(
-                    filter,
-                    options,
-                    &mut session.lock().await.deref_mut(),
-                )
+                .count_documents(filter.unwrap_or_default())
+                .with_options(options)
+                .session(session.lock().await.deref_mut())
                 .await
                 .map_err(|e| MongoError::from(e))?;
 
@@ -1122,7 +1128,8 @@ impl CoreCollection {
 
         let fut = async move {
             let result = collection
-                .estimated_document_count(options)
+                .estimated_document_count()
+                .with_options(options)
                 .await
                 .map_err(|e| MongoError::from(e))?;
 
@@ -1150,7 +1157,8 @@ impl CoreCollection {
 
         let fut = async move {
             let result: CoreCreateIndexResult = collection
-                .create_index(model, options)
+                .create_index(model)
+                .with_options(options)
                 .await
                 // .map_err(Into::<MongoError>::into)?
                 .map_err(|e| MongoError::from(e))?
@@ -1183,7 +1191,9 @@ impl CoreCollection {
 
         let fut = async move {
             let result: CoreCreateIndexResult = collection
-                .create_index_with_session(model, options, &mut session.lock().await.deref_mut())
+                .create_index(model)
+                .with_options(options)
+                .session(session.lock().await.deref_mut())
                 .await
                 .map_err(|e| MongoError::from(e))?
                 .into();
@@ -1212,7 +1222,8 @@ impl CoreCollection {
 
         let fut = async move {
             let result: CoreCreateIndexesResult = collection
-                .create_indexes(model, options)
+                .create_indexes(model)
+                .with_options(options)
                 .await
                 .map_err(|e| MongoError::from(e))?
                 .into();
@@ -1244,7 +1255,9 @@ impl CoreCollection {
 
         let fut = async move {
             let result: CoreCreateIndexesResult = collection
-                .create_indexes_with_session(model, options, &mut session.lock().await.deref_mut())
+                .create_indexes(model)
+                .with_options(options)
+                .session(session.lock().await.deref_mut())
                 .await
                 .map_err(|e| MongoError::from(e))?
                 .into();
@@ -1272,7 +1285,8 @@ impl CoreCollection {
 
         let fut = async move {
             collection
-                .drop_index(name, options)
+                .drop_index(name)
+                .with_options(options)
                 .await
                 .map_err(|e| MongoError::from(e))?;
 
@@ -1302,7 +1316,9 @@ impl CoreCollection {
 
         let fut = async move {
             collection
-                .drop_index_with_session(name, options, &mut session.lock().await.deref_mut())
+                .drop_index(name)
+                .with_options(options)
+                .session(session.lock().await.deref_mut())
                 .await
                 .map_err(|e| MongoError::from(e))?;
 
@@ -1322,7 +1338,8 @@ impl CoreCollection {
 
         let fut = async move {
             collection
-                .drop_indexes(options)
+                .drop_indexes()
+                .with_options(options)
                 .await
                 .map_err(|e| MongoError::from(e))?;
 
@@ -1351,7 +1368,9 @@ impl CoreCollection {
 
         let fut = async move {
             collection
-                .drop_indexes_with_session(options, &mut session.lock().await.deref_mut())
+                .drop_indexes()
+                .with_options(options)
+                .session(session.lock().await.deref_mut())
                 .await
                 .map_err(|e| MongoError::from(e))?;
 
@@ -1374,7 +1393,8 @@ impl CoreCollection {
 
         let fut = async move {
             let result: Vec<CoreIndexModel> = collection
-                .list_indexes(options)
+                .list_indexes()
+                .with_options(options)
                 .await
                 .map_err(|e| MongoError::from(e))?
                 .try_collect::<Vec<IndexModel>>()
@@ -1410,7 +1430,9 @@ impl CoreCollection {
         let fut = async move {
             let mut session = session.lock().await;
             let result: Vec<CoreIndexModel> = collection
-                .list_indexes_with_session(options, &mut session.deref_mut())
+                .list_indexes()
+                .with_options(options)
+                .session(session.deref_mut())
                 .await
                 .map_err(|e| MongoError::from(e))?
                 .stream(&mut session.deref_mut())
@@ -1437,7 +1459,8 @@ impl CoreCollection {
 
         let fut = async move {
             collection
-                .drop(options)
+                .drop()
+                .with_options(options)
                 .await
                 .map_err(|e| MongoError::from(e))?;
 
@@ -1463,7 +1486,9 @@ impl CoreCollection {
 
         let fut = async move {
             collection
-                .drop_with_session(options, &mut session.lock().await.deref_mut())
+                .drop()
+                .with_options(options)
+                .session(session.lock().await.deref_mut())
                 .await
                 .map_err(|e| MongoError::from(e))?;
 

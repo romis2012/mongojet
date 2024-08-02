@@ -83,7 +83,8 @@ impl CoreDatabase {
         debug!("{:?}.create_collection, options: {:?}", self.name, options);
 
         let fut = async move {
-            db.create_collection(name, options)
+            db.create_collection(name)
+                .with_options(options)
                 .await
                 .map_err(|e| MongoError::from(e))?;
 
@@ -112,13 +113,11 @@ impl CoreDatabase {
         let session = Python::with_gil(|py| session.borrow(py).session.clone());
 
         let fut = async move {
-            db.create_collection_with_session(
-                name,
-                options,
-                &mut session.lock().await.deref_mut(),
-            )
-            .await
-            .map_err(|e| MongoError::from(e))?;
+            db.create_collection(name)
+                .with_options(options)
+                .session(session.lock().await.deref_mut())
+                .await
+                .map_err(|e| MongoError::from(e))?;
 
             Ok(())
         };
@@ -144,7 +143,9 @@ impl CoreDatabase {
 
         let fut = async move {
             let docs: Vec<CoreCollectionSpecification> = db
-                .list_collections(filter, options)
+                .list_collections()
+                .with_options(options)
+                .filter(filter.unwrap_or_default())
                 .await
                 .map_err(|e| MongoError::from(e))?
                 .try_collect::<Vec<CollectionSpecification>>()
@@ -183,7 +184,10 @@ impl CoreDatabase {
             let mut session = session.lock().await;
 
             let docs: Vec<CoreCollectionSpecification> = db
-                .list_collections_with_session(filter, options, &mut session.deref_mut())
+                .list_collections()
+                .with_options(options)
+                .filter(filter.unwrap_or_default())
+                .session(session.deref_mut())
                 .await
                 .map_err(|e| MongoError::from(e))?
                 .stream(&mut session.deref_mut())
@@ -216,11 +220,12 @@ impl CoreDatabase {
         debug!("{:?}.run_command, command: {:?}", self.name, command);
 
         let fut = async move {
-            let result: CoreDocument = db
-                .run_command(command, selection_criteria)
-                .await
-                .map_err(|e| MongoError::from(e))?
-                .into();
+            let mut command = db.run_command(command);
+            if let Some(sc) = selection_criteria {
+                command = command.selection_criteria(sc);
+            }
+
+            let result: CoreDocument = command.await.map_err(|e| MongoError::from(e))?.into();
 
             Ok(result)
         };
@@ -250,15 +255,15 @@ impl CoreDatabase {
         let session = Python::with_gil(|py| session.borrow(py).session.clone());
 
         let fut = async move {
-            let result: CoreDocument = db
-                .run_command_with_session(
-                    command,
-                    selection_criteria,
-                    &mut session.lock().await.deref_mut(),
-                )
-                .await
-                .map_err(|e| MongoError::from(e))?
-                .into();
+            let mut session = session.lock().await;
+
+            let mut command = db.run_command(command).session(session.deref_mut());
+
+            if let Some(sc) = selection_criteria {
+                command = command.selection_criteria(sc);
+            }
+
+            let result: CoreDocument = command.await.map_err(|e| MongoError::from(e))?.into();
 
             Ok(result)
         };
@@ -283,7 +288,8 @@ impl CoreDatabase {
 
         let fut = async move {
             let cur = db
-                .aggregate(pipeline, options)
+                .aggregate(pipeline)
+                .with_options(options)
                 .await
                 .map_err(|e| MongoError::from(e))?;
 
@@ -313,7 +319,9 @@ impl CoreDatabase {
 
         let fut = async move {
             let cur = db
-                .aggregate_with_session(pipeline, options, &mut session.lock().await.deref_mut())
+                .aggregate(pipeline)
+                .with_options(options)
+                .session(session.lock().await.deref_mut())
                 .await
                 .map_err(|e| MongoError::from(e))?;
 
@@ -349,7 +357,10 @@ impl CoreDatabase {
         debug!("{:?}.drop, options: {:?}", self.name, options);
 
         let fut = async move {
-            db.drop(options).await.map_err(|e| MongoError::from(e))?;
+            db.drop()
+                .with_options(options)
+                .await
+                .map_err(|e| MongoError::from(e))?;
             Ok(())
         };
 
@@ -371,7 +382,9 @@ impl CoreDatabase {
         let session = Python::with_gil(|py| session.borrow(py).session.clone());
 
         let fut = async move {
-            db.drop_with_session(options, &mut session.lock().await.deref_mut())
+            db.drop()
+                .with_options(options)
+                .session(session.lock().await.deref_mut())
                 .await
                 .map_err(|e| MongoError::from(e))?;
 

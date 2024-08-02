@@ -37,7 +37,8 @@ impl CoreSession {
         let fut = async move {
             s.lock()
                 .await
-                .start_transaction(options)
+                .start_transaction()
+                .with_options(options)
                 .await
                 .map_err(|e| MongoError::from(e))?;
             Ok(())
