@@ -1,16 +1,3 @@
-use bson::{Document, RawDocumentBuf};
-use futures::TryStreamExt;
-use log::debug;
-use mongodb::options::{
-    AggregateOptions, CollectionOptions, CreateCollectionOptions, DropDatabaseOptions,
-    GridFsBucketOptions, ListCollectionsOptions, SelectionCriteria,
-};
-use mongodb::results::CollectionSpecification;
-use mongodb::Database;
-use pyo3::prelude::*;
-use std::ops::DerefMut;
-use std::sync::Arc;
-
 use crate::collection::CoreCollection;
 use crate::cursor::{CoreCursor, CoreSessionCursor};
 use crate::document::{CoreDocument, CorePipeline};
@@ -26,6 +13,19 @@ use crate::result::{
 };
 use crate::runtime::spawn;
 use crate::session::CoreSession;
+use bson::{Document, RawDocumentBuf};
+use futures::TryStreamExt;
+use log::debug;
+use mongodb::action::Action;
+use mongodb::options::{
+    AggregateOptions, CollectionOptions, CreateCollectionOptions, DropDatabaseOptions,
+    GridFsBucketOptions, ListCollectionsOptions, SelectionCriteria,
+};
+use mongodb::results::CollectionSpecification;
+use mongodb::Database;
+use pyo3::prelude::*;
+use std::ops::DerefMut;
+use std::sync::Arc;
 
 #[pyclass]
 pub struct CoreDatabase {
@@ -220,12 +220,12 @@ impl CoreDatabase {
         debug!("{:?}.run_command, command: {:?}", self.name, command);
 
         let fut = async move {
-            let mut command = db.run_command(command);
-            if let Some(sc) = selection_criteria {
-                command = command.selection_criteria(sc);
-            }
-
-            let result: CoreDocument = command.await.map_err(|e| MongoError::from(e))?.into();
+            let result: CoreDocument = db
+                .run_command(command)
+                .optional(selection_criteria, |cmd, sc| cmd.selection_criteria(sc))
+                .await
+                .map_err(|e| MongoError::from(e))?
+                .into();
 
             Ok(result)
         };
