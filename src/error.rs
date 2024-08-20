@@ -1,6 +1,6 @@
 use std::fmt::{Display, Formatter};
 
-use mongodb::error::{ErrorKind, WriteFailure};
+use mongodb::error::{ErrorKind, GridFsErrorKind, WriteFailure};
 use pyo3::exceptions::{PyException, PyValueError};
 use pyo3::{create_exception, PyErr};
 
@@ -133,10 +133,10 @@ impl From<MongoError> for PyErr {
                 // if cmd.code == 85{
                 OperationFailure::new_err(msg)
             }
-            //todo
-            //error[E0603]: tuple variant `GridFs` is private
-            // https://github.com/mongodb/mongo-rust-driver/issues/1071
-            // ErrorKind::GridFs(..) => GridFSError::new_err(msg),
+            ErrorKind::GridFs(kind) => match kind {
+                GridFsErrorKind::FileNotFound { .. } => NoFile::new_err(msg),
+                _ => GridFSError::new_err(msg),
+            },
             _ => PyMongoError::new_err(msg),
         }
     }
