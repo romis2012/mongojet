@@ -143,7 +143,11 @@ impl From<MongoError> for PyErr {
 }
 
 impl From<std::io::Error> for MongoError {
-    fn from(value: std::io::Error) -> Self {
-        MongoError(mongodb::error::Error::from(value))
+    fn from(io_error: std::io::Error) -> Self {
+        let mongo_error = io_error.downcast::<mongodb::error::Error>();
+        match mongo_error {
+            Ok(e) => MongoError(e),
+            Err(e) => MongoError(mongodb::error::Error::from(e)),
+        }
     }
 }
