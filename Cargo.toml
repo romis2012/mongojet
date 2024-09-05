@@ -1,6 +1,6 @@
 [package]
 name = "mongojet"
-version = "0.2.1"
+version = "0.2.2"
 edition = "2021"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
@@ -11,10 +11,10 @@ crate-type = ["cdylib"]
 [dependencies]
 pyo3 = {version = "0.22", features = ["full"]}
 pyo3-log={version = "0.11" }
-tokio = {version = "1.39", features = ["full"]}
+tokio = {version = "1.40", features = ["full"]}
 futures="0.3"
 
-mongodb = {version = "3.0"}
+mongodb = {version = "3.1"}
 bson = { version = "2.11", features = ["chrono-0_4"] }
 chrono = {version = "0.4", features = ["serde"]}
 chrono-tz = "0.9"
