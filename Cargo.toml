@@ -1,6 +1,6 @@
 [package]
 name = "mongojet"
-version = "0.2.2"
+version = "0.2.3"
 edition = "2021"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
@@ -17,6 +17,6 @@ futures="0.3"
 mongodb = {version = "3.1"}
 bson = { version = "2.11", features = ["chrono-0_4"] }
 chrono = {version = "0.4", features = ["serde"]}
-chrono-tz = "0.9"
+chrono-tz = "0.10"
 serde = { version = "1.0", features = ["derive"] }
 log = "0.4"
