@@ -8,7 +8,6 @@ use log::debug;
 use mongodb::gridfs::GridFsBucket;
 use mongodb::options::GridFsUploadOptions;
 use pyo3::prelude::*;
-use pyo3::types::PyBytes;
 
 #[pyclass]
 pub struct CoreGridFsBucket {
@@ -77,7 +76,7 @@ impl CoreGridFsBucket {
         spawn(fut).await?
     }
 
-    pub async fn get_by_id(&self, options: CoreGridFsGetByIdOptions) -> PyResult<PyObject> {
+    pub async fn get_by_id(&self, options: CoreGridFsGetByIdOptions) -> PyResult<Vec<u8>> {
         let bucket = self.bucket.clone();
 
         debug!("gridfs.get_by_id, options: {:?}", options);
@@ -95,17 +94,13 @@ impl CoreGridFsBucket {
                 .await
                 .map_err(|e| MongoError::from(e))?;
 
-            // Python::with_gil(|py|{ Ok(buf.into_py(py)) })
-            Python::with_gil(|py| Ok(PyBytes::new_bound(py, &buf).to_object(py)))
+            Ok(buf)
         };
 
         spawn(fut).await?
     }
 
-    pub async fn get_by_name<'py>(
-        &self,
-        options: CoreGridFsGetByNameOptions,
-    ) -> PyResult<PyObject> {
+    pub async fn get_by_name(&self, options: CoreGridFsGetByNameOptions) -> PyResult<Vec<u8>> {
         let bucket = self.bucket.clone();
 
         debug!("gridfs.get_by_name, options: {:?}", options);
@@ -123,13 +118,13 @@ impl CoreGridFsBucket {
                 .await
                 .map_err(|e| MongoError::from(e))?;
 
-            Python::with_gil(|py| Ok(PyBytes::new_bound(py, &buf).to_object(py)))
+            Ok(buf)
         };
 
         spawn(fut).await?
     }
 
-    pub async fn delete<'py>(&self, options: CoreGridFsGetByIdOptions) -> PyResult<()> {
+    pub async fn delete(&self, options: CoreGridFsGetByIdOptions) -> PyResult<()> {
         let bucket = self.bucket.clone();
 
         debug!("gridfs.delete, options: {:?}", options);

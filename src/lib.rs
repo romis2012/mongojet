@@ -37,23 +37,23 @@ fn mongojet(_py: Python, m: &Bound<'_, PyModule>) -> PyResult<()> {
     m.add_class::<CoreCollection>()?;
     m.add_class::<CoreCursor>()?;
 
-    m.add("PyMongoError", m.py().get_type_bound::<PyMongoError>())?;
-    m.add("OperationFailure", m.py().get_type_bound::<OperationFailure>())?;
-    m.add("WriteError", m.py().get_type_bound::<WriteError>())?;
-    m.add("WriteConcernError", m.py().get_type_bound::<WriteConcernError>())?;
-    m.add("DuplicateKeyError", m.py().get_type_bound::<DuplicateKeyError>())?;
+    m.add("PyMongoError", m.py().get_type::<PyMongoError>())?;
+    m.add("OperationFailure", m.py().get_type::<OperationFailure>())?;
+    m.add("WriteError", m.py().get_type::<WriteError>())?;
+    m.add("WriteConcernError", m.py().get_type::<WriteConcernError>())?;
+    m.add("DuplicateKeyError", m.py().get_type::<DuplicateKeyError>())?;
 
-    m.add("BsonSerializationError", m.py().get_type_bound::<BsonSerializationError>())?;
-    m.add("BsonDeserializationError", m.py().get_type_bound::<BsonDeserializationError>())?;
+    m.add("BsonSerializationError", m.py().get_type::<BsonSerializationError>())?;
+    m.add("BsonDeserializationError", m.py().get_type::<BsonDeserializationError>())?;
 
-    m.add("ConnectionFailure", m.py().get_type_bound::<ConnectionFailure>())?;
-    m.add("ServerSelectionError", m.py().get_type_bound::<ServerSelectionError>())?;
+    m.add("ConnectionFailure", m.py().get_type::<ConnectionFailure>())?;
+    m.add("ServerSelectionError", m.py().get_type::<ServerSelectionError>())?;
 
-    m.add("ConfigurationError", m.py().get_type_bound::<ConfigurationError>())?;
+    m.add("ConfigurationError", m.py().get_type::<ConfigurationError>())?;
 
-    m.add("GridFSError", m.py().get_type_bound::<GridFSError>())?;
-    m.add("NoFile", m.py().get_type_bound::<NoFile>())?;
-    m.add("FileExists", m.py().get_type_bound::<FileExists>())?;
+    m.add("GridFSError", m.py().get_type::<GridFSError>())?;
+    m.add("NoFile", m.py().get_type::<NoFile>())?;
+    m.add("FileExists", m.py().get_type::<FileExists>())?;
 
     Ok(())
 }

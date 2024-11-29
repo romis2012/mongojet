@@ -15,14 +15,15 @@ macro_rules! from_py_object {
 #[rustfmt::skip]
 macro_rules! into_py_object {
     ($t:ident) => {
-        impl IntoPy<PyObject> for $t {
-            fn into_py(self, py: Python<'_>) -> PyObject {
-                // bson::to_vec(&self)
-                //     .expect(format!("Couldn't serialize value to bson: {:?}", self).as_str())
-                //     .into_py(py) // list[int]
+        impl<'py> IntoPyObject<'py> for $t {
+            type Target = PyBytes;
+            type Output = Bound<'py, Self::Target>;
+            type Error = std::convert::Infallible;
+        
+            fn into_pyobject(self, py: Python<'py>) -> Result<Self::Output, Self::Error> {
                 let buf = bson::to_vec(&self)
                     .expect(format!("Couldn't serialize value to bson: {:?}", self).as_str());
-                PyBytes::new_bound(py, &buf).into()
+                Ok(PyBytes::new(py, &buf))
             }
         }
     };

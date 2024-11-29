@@ -1,6 +1,6 @@
 [package]
 name = "mongojet"
-version = "0.2.4"
+version = "0.2.5"
 edition = "2021"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
@@ -9,8 +9,8 @@ name = "mongojet"
 crate-type = ["cdylib"]
 
 [dependencies]
-pyo3 = {version = "0.22", features = ["full"]}
-pyo3-log={version = "0.11" }
+pyo3 = {version = "0.23", features = ["full"]}
+pyo3-log={version = "0.12" }
 tokio = {version = "1.40", features = ["full"]}
 futures="0.3"
 

@@ -30,13 +30,18 @@ impl<'a> FromPyObject<'a> for CoreDocument {
     }
 }
 
-impl IntoPy<PyObject> for CoreDocument {
-    fn into_py(self, py: Python<'_>) -> PyObject {
+impl<'py> IntoPyObject<'py> for CoreDocument {
+    type Target = PyBytes;
+    type Output = Bound<'py, Self::Target>;
+    type Error = std::convert::Infallible;
+
+    fn into_pyobject(self, py: Python<'py>) -> Result<Self::Output, Self::Error> {
         let mut data: Vec<u8> = Vec::new();
         self.0
             .to_writer(&mut data)
             .expect("Couldn't convert bson document into bytes");
-        PyBytes::new_bound(py, &data).to_object(py)
+
+        Ok(PyBytes::new(py, &data))
     }
 }
 
@@ -125,10 +130,13 @@ impl Into<RawDocumentBuf> for CoreRawDocument {
     }
 }
 
-impl IntoPy<PyObject> for CoreRawDocument {
-    fn into_py(self, py: Python<'_>) -> PyObject {
-        // self.0.into_bytes().into_py(py) //list[int]
-        PyBytes::new_bound(py, self.0.as_bytes()).to_object(py)
+impl<'py> IntoPyObject<'py> for CoreRawDocument {
+    type Target = PyBytes;
+    type Output = Bound<'py, Self::Target>;
+    type Error = std::convert::Infallible;
+
+    fn into_pyobject(self, py: Python<'py>) -> Result<Self::Output, Self::Error> {
+        Ok(PyBytes::new(py, self.0.as_bytes()))
     }
 }
 
