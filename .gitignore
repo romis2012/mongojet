@@ -74,3 +74,5 @@ docs/_build/
 test_scripts/
 build.Dockerfile
 build.sh
+
+.benchmarks/
