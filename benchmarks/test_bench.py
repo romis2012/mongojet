@@ -121,4 +121,4 @@ def test_insert_pymongo(aio_benchmark, pymongo_update_collection, concurrency):
     aio_benchmark(insert, pymongo_update_collection, ITERATIONS, concurrency)
 
 
-# python -m pytest ./benchmark -m find -v -s
+# python -m pytest ./benchmarks -m find -v -s
