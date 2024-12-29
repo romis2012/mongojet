@@ -1,6 +1,7 @@
 # pylint:disable=redefined-outer-name
 
 import asyncio
+import pytest
 import pytest_asyncio
 from motor.motor_asyncio import AsyncIOMotorClient
 from motor.core import AgnosticDatabase as MotorDatabase
@@ -17,8 +18,17 @@ UPDATE_COLLECTION_NAME = 'collection_to_update'
 DOC_NUM = 128
 
 
+@pytest.fixture(scope="session")
+def event_loop():
+    loop = asyncio.new_event_loop()
+    try:
+        yield loop
+    finally:
+        loop.close()
+
+
 @pytest_asyncio.fixture(scope='session', autouse=True)
-async def init_db():
+async def init_db(event_loop):
     client = await create_client(DB_URL)
     db = client.get_default_database()
     collection = db[READ_COLLECTION_NAME]
@@ -40,8 +50,8 @@ async def mongojet_client():
 
 
 @pytest_asyncio.fixture(scope='session')
-async def motor_client():
-    c = AsyncIOMotorClient(DB_URL)
+async def motor_client(event_loop):
+    c = AsyncIOMotorClient(DB_URL, io_loop=event_loop)
     yield c
     c.close()
 
@@ -106,12 +116,13 @@ async def pymongo_update_collection(pymongo_db: AsyncDatabase):
 
 # https://github.com/ionelmc/pytest-benchmark/issues/66
 @pytest_asyncio.fixture
-def aio_benchmark(benchmark):
+def aio_benchmark(benchmark, event_loop):
     def _wrapper(func, *args, **kwargs):
         if asyncio.iscoroutinefunction(func):
 
             def run_coro(*pos, **kwd):
-                return asyncio.get_event_loop().run_until_complete(func(*pos, **kwd))
+                # return asyncio.get_event_loop().run_until_complete(func(*pos, **kwd))
+                return event_loop.run_until_complete(func(*pos, **kwd))
 
             return benchmark(run_coro, *args, **kwargs)
         else:

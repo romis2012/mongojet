@@ -8,12 +8,12 @@ from mongojet import Collection as MongojetCollection
 
 ITERATIONS = 1
 CONCURENCIES = [
-    # 32,
-    # 64,
-    # 128,
-    # 256,
+    32,
+    64,
+    128,
+    256,
     512,
-    # 1024,
+    1024,
 ]
 
 
