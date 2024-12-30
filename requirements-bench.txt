@@ -2,3 +2,6 @@
 pytest-benchmark>=5.1.0
 motor>=3.6.0
 # pymongo>=4.10.1 # to test pymongo.AsyncMongoClient, install it manually to prevent conflict with motor 3.6.0
+plotly>=5.24.1
+pandas>=2.2.3
+kaleido>=0.2.1
