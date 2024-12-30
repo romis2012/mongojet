@@ -169,3 +169,10 @@ with open('/path/to/my/awesome/image_copy.png', mode='wb') as file:
 await bucket.delete(file_id)
 ```
 
+## Simple benchmark (lower is better):
+### find_one
+![find_one](./benchmarks/find_one.png)
+### insert_one
+![insert_one](./benchmarks/insert.png)
+### iterate over cursor
+![cursor](./benchmarks/cursor.png)
