@@ -14,7 +14,7 @@ pyo3-log={version = "0.12" }
 tokio = {version = "1.40", features = ["full"]}
 futures="0.3"
 
-mongodb = {version = "3.1"}
+mongodb = {version = "~3.2"}
 bson = { version = "2.11", features = ["chrono-0_4"] }
 chrono = {version = "0.4", features = ["serde"]}
 chrono-tz = "0.10"
