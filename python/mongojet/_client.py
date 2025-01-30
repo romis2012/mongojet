@@ -1,11 +1,12 @@
 from typing import Optional
+import warnings
 
 from bson import CodecOptions
 
-from .mongojet import core_create_client  # noqa
+from .mongojet import core_create_client  # pylint:disable=no-name-in-module
 
 try:
-    from typing import Unpack
+    from typing import Unpack  # pylint:disable=ungrouped-imports
 except ImportError:
     from typing_extensions import Unpack
 
@@ -25,6 +26,7 @@ class Client:
         self._codec_options = codec_options
         self._codec = Codec(options=codec_options)
         self._core_client = core_client
+        self._closing = False
 
     def get_default_database(
         self,
@@ -82,10 +84,18 @@ class Client:
         )
 
     async def close(self, immediate=True):
+        # if self._closing:
+        #     return
+        self._closing = True
         if immediate:
             await self._core_client.shutdown_immediate()
         else:
             await self._core_client.shutdown()
+
+    def __del__(self):
+        if not self._closing:
+            warnings.warn(f"Unclosed mongojet client {self!r}", ResourceWarning)
+            # asyncio.create_task(self.close())
 
     def __getitem__(self, name: str) -> Database:
         return self.get_database(name)
