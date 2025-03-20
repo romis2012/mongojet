@@ -51,6 +51,7 @@ ignore = "E203,W503"
 
 [tool.pytest.ini_options]
 asyncio_mode = "strict"
+asyncio_default_fixture_loop_scope = "session"
 
 
 

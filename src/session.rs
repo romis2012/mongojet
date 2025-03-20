@@ -24,7 +24,6 @@ impl CoreSession {
 
 #[pymethods]
 impl CoreSession {
-    #[pyo3(signature = (options=None))]
     pub async fn start_transaction(
         &mut self,
         options: Option<CoreTransactionOptions>,
