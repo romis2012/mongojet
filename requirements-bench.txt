@@ -1,7 +1,7 @@
 -r requirements-dev.txt
 pytest-benchmark>=5.1.0
 motor>=3.7.0
-pymongo>=4.12.0
+pymongo>=4.13.0
 plotly>=5.24.1
 pandas>=2.2.3
 kaleido>=0.2.1
