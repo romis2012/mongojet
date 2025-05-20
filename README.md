@@ -7,7 +7,7 @@
 
 Async (asyncio) MongoDB client for Python. 
 It uses [Rust MongoDB driver](https://github.com/mongodb/mongo-rust-driver) and [tokio](https://github.com/tokio-rs/tokio) under the hood.
-Mongojet is 2-4x faster than Motor in high concurrency scenarios.
+Mongojet is 2-4x faster than Motor (and 1.5-3.5x faster than PyMongo AsyncMongoClient) in high concurrency scenarios (see benchmarks below).
 
 ## Requirements
 - Python >= 3.8
