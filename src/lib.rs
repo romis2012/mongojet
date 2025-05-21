@@ -1,3 +1,5 @@
+#![allow(clippy::from_over_into)]
+
 mod client;
 mod collection;
 mod conv;
