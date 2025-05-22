@@ -171,8 +171,9 @@ await bucket.delete(file_id)
 
 ## Simple benchmark (lower is better):
 ### find_one
-![find_one](./benchmarks/find_one.png)
+<!-- ![find_one](./benchmarks/find_one.png) -->
+![find_one](https://github.com/romis2012/mongojet/blob/master/benchmarks/find_one.png?raw=true)
 ### insert_one
-![insert_one](./benchmarks/insert.png)
+![insert_one](https://github.com/romis2012/mongojet/blob/master/benchmarks/insert.png?raw=true)
 ### iterate over cursor
-![cursor](./benchmarks/cursor.png)
+![cursor](https://github.com/romis2012/mongojet/blob/master/benchmarks/cursor.png?raw=true)
