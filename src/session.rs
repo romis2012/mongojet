@@ -39,7 +39,7 @@ impl CoreSession {
                 .start_transaction()
                 .with_options(options)
                 .await
-                .map_err(|e| MongoError::from(e))?;
+                .map_err(MongoError::from)?;
             Ok(())
         };
 
@@ -55,7 +55,7 @@ impl CoreSession {
                 .await
                 .commit_transaction()
                 .await
-                .map_err(|e| MongoError::from(e))?;
+                .map_err(MongoError::from)?;
             Ok(())
         };
         spawn(fut).await?
@@ -70,7 +70,7 @@ impl CoreSession {
                 .await
                 .abort_transaction()
                 .await
-                .map_err(|e| MongoError::from(e))?;
+                .map_err(MongoError::from)?;
             Ok(())
         };
 

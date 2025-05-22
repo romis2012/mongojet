@@ -33,9 +33,8 @@ from_py_object!(CoreDatabaseOptions);
 
 impl Into<DatabaseOptions> for CoreDatabaseOptions {
     fn into(self) -> DatabaseOptions {
-        let selection_criteria: Option<SelectionCriteria> = self
-            .read_preference
-            .map(|p| SelectionCriteria::ReadPreference(p));
+        let selection_criteria: Option<SelectionCriteria> =
+            self.read_preference.map(SelectionCriteria::ReadPreference);
 
         DatabaseOptions::builder()
             .selection_criteria(selection_criteria)
@@ -56,9 +55,8 @@ from_py_object!(CoreCollectionOptions);
 
 impl Into<CollectionOptions> for CoreCollectionOptions {
     fn into(self) -> CollectionOptions {
-        let selection_criteria: Option<SelectionCriteria> = self
-            .read_preference
-            .map(|p| SelectionCriteria::ReadPreference(p));
+        let selection_criteria: Option<SelectionCriteria> =
+            self.read_preference.map(SelectionCriteria::ReadPreference);
 
         CollectionOptions::builder()
             .selection_criteria(selection_criteria)
@@ -99,9 +97,8 @@ from_py_object!(CoreFindOptions);
 
 impl Into<FindOptions> for CoreFindOptions {
     fn into(self) -> FindOptions {
-        let selection_criteria: Option<SelectionCriteria> = self
-            .read_preference
-            .map(|p| SelectionCriteria::ReadPreference(p));
+        let selection_criteria: Option<SelectionCriteria> =
+            self.read_preference.map(SelectionCriteria::ReadPreference);
 
         FindOptions::builder()
             .sort(self.sort)
@@ -157,9 +154,8 @@ from_py_object!(CoreFindOneOptions);
 
 impl Into<FindOneOptions> for CoreFindOneOptions {
     fn into(self) -> FindOneOptions {
-        let selection_criteria: Option<SelectionCriteria> = self
-            .read_preference
-            .map(|p| SelectionCriteria::ReadPreference(p));
+        let selection_criteria: Option<SelectionCriteria> =
+            self.read_preference.map(SelectionCriteria::ReadPreference);
 
         FindOneOptions::builder()
             .sort(self.sort)
@@ -307,9 +303,8 @@ from_py_object!(CoreAggregateOptions);
 
 impl Into<AggregateOptions> for CoreAggregateOptions {
     fn into(self) -> AggregateOptions {
-        let selection_criteria: Option<SelectionCriteria> = self
-            .read_preference
-            .map(|p| SelectionCriteria::ReadPreference(p));
+        let selection_criteria: Option<SelectionCriteria> =
+            self.read_preference.map(SelectionCriteria::ReadPreference);
 
         AggregateOptions::builder()
             .bypass_document_validation(self.bypass_document_validation)
@@ -466,9 +461,8 @@ from_py_object!(CoreCountOptions);
 
 impl Into<CountOptions> for CoreCountOptions {
     fn into(self) -> CountOptions {
-        let selection_criteria: Option<SelectionCriteria> = self
-            .read_preference
-            .map(|p| SelectionCriteria::ReadPreference(p));
+        let selection_criteria: Option<SelectionCriteria> =
+            self.read_preference.map(SelectionCriteria::ReadPreference);
 
         CountOptions::builder()
             .skip(self.skip)
@@ -495,9 +489,8 @@ from_py_object!(CoreEstimatedCountOptions);
 
 impl Into<EstimatedDocumentCountOptions> for CoreEstimatedCountOptions {
     fn into(self) -> EstimatedDocumentCountOptions {
-        let selection_criteria: Option<SelectionCriteria> = self
-            .read_preference
-            .map(|p| SelectionCriteria::ReadPreference(p));
+        let selection_criteria: Option<SelectionCriteria> =
+            self.read_preference.map(SelectionCriteria::ReadPreference);
 
         EstimatedDocumentCountOptions::builder()
             .max_time(self.max_time_ms.map(Duration::from_millis))
@@ -521,9 +514,8 @@ from_py_object!(CoreDistinctOptions);
 
 impl Into<DistinctOptions> for CoreDistinctOptions {
     fn into(self) -> DistinctOptions {
-        let selection_criteria: Option<SelectionCriteria> = self
-            .read_preference
-            .map(|p| SelectionCriteria::ReadPreference(p));
+        let selection_criteria: Option<SelectionCriteria> =
+            self.read_preference.map(SelectionCriteria::ReadPreference);
 
         DistinctOptions::builder()
             .max_time(self.max_time_ms.map(Duration::from_millis))
@@ -645,9 +637,8 @@ from_py_object!(CoreTransactionOptions);
 
 impl Into<TransactionOptions> for CoreTransactionOptions {
     fn into(self) -> TransactionOptions {
-        let selection_criteria: Option<SelectionCriteria> = self
-            .read_preference
-            .map(|p| SelectionCriteria::ReadPreference(p));
+        let selection_criteria: Option<SelectionCriteria> =
+            self.read_preference.map(SelectionCriteria::ReadPreference);
 
         TransactionOptions::builder()
             .read_concern(self.read_concern)
@@ -766,9 +757,8 @@ from_py_object!(CoreGridFsBucketOptions);
 
 impl Into<GridFsBucketOptions> for CoreGridFsBucketOptions {
     fn into(self) -> GridFsBucketOptions {
-        let selection_criteria: Option<SelectionCriteria> = self
-            .read_preference
-            .map(|p| SelectionCriteria::ReadPreference(p));
+        let selection_criteria: Option<SelectionCriteria> =
+            self.read_preference.map(SelectionCriteria::ReadPreference);
 
         GridFsBucketOptions::builder()
             .bucket_name(self.bucket_name)

@@ -49,24 +49,21 @@ impl CoreGridFsBucket {
                     .id(id)
                     .with_options(upload_options)
                     .await
-                    .map_err(|e| MongoError::from(e))?
+                    .map_err(MongoError::from)?
             } else {
                 bucket
                     .open_upload_stream(filename)
                     .with_options(upload_options)
                     .await
-                    .map_err(|e| MongoError::from(e))?
+                    .map_err(MongoError::from)?
             };
 
             upload_stream
                 .write_all(&data[..])
                 .await
-                .map_err(|e| MongoError::from(e))?;
+                .map_err(MongoError::from)?;
 
-            upload_stream
-                .close()
-                .await
-                .map_err(|e| MongoError::from(e))?;
+            upload_stream.close().await.map_err(MongoError::from)?;
 
             let result: CoreDocument = doc! {"file_id": upload_stream.id()}.into();
             Ok(result)
@@ -87,11 +84,11 @@ impl CoreGridFsBucket {
             let mut download_stream = bucket
                 .open_download_stream(file_id)
                 .await
-                .map_err(|e| MongoError::from(e))?;
+                .map_err(MongoError::from)?;
             download_stream
                 .read_to_end(&mut buf)
                 .await
-                .map_err(|e| MongoError::from(e))?;
+                .map_err(MongoError::from)?;
 
             Ok(buf)
         };
@@ -111,11 +108,11 @@ impl CoreGridFsBucket {
             let mut download_stream = bucket
                 .open_download_stream_by_name(filename)
                 .await
-                .map_err(|e| MongoError::from(e))?;
+                .map_err(MongoError::from)?;
             download_stream
                 .read_to_end(&mut buf)
                 .await
-                .map_err(|e| MongoError::from(e))?;
+                .map_err(MongoError::from)?;
 
             Ok(buf)
         };
@@ -130,10 +127,7 @@ impl CoreGridFsBucket {
 
         let file_id = options.file_id;
         let fut = async move {
-            bucket
-                .delete(file_id)
-                .await
-                .map_err(|e| MongoError::from(e))?;
+            bucket.delete(file_id).await.map_err(MongoError::from)?;
 
             Ok(())
         };

@@ -18,15 +18,13 @@ pub struct CoreClient {
 #[pyfunction]
 pub async fn core_create_client(url: String) -> PyResult<CoreClient> {
     let fut = async move {
-        let options = ClientOptions::parse(url)
-            .await
-            .map_err(|e| MongoError::from(e))?;
+        let options = ClientOptions::parse(url).await.map_err(MongoError::from)?;
 
         let default_database_name = options.default_database.clone();
 
         debug!("create_client options: {:?}", options);
 
-        let client = Client::with_options(options).map_err(|e| MongoError::from(e))?;
+        let client = Client::with_options(options).map_err(MongoError::from)?;
 
         Ok(CoreClient {
             client,
@@ -77,7 +75,7 @@ impl CoreClient {
                 .start_session()
                 .with_options(options)
                 .await
-                .map_err(|e| MongoError::from(e))?;
+                .map_err(MongoError::from)?;
             Ok(CoreSession::new(s))
         };
         spawn(fut).await?

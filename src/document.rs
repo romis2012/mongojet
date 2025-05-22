@@ -99,9 +99,9 @@ impl<'a> FromPyObject<'a> for CoreCompoundDocument {
         if let Ok(doc) = ob.extract::<CoreDocument>() {
             return Ok(CoreCompoundDocument::Doc(doc));
         }
-        return Err(PyValueError::new_err(
+        Err(PyValueError::new_err(
             "Couldn't convert CoreCompoundDocument from python".to_string(),
-        ));
+        ))
     }
 }
 

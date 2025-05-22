@@ -85,7 +85,7 @@ impl CoreDatabase {
             db.create_collection(name)
                 .with_options(options)
                 .await
-                .map_err(|e| MongoError::from(e))?;
+                .map_err(MongoError::from)?;
 
             Ok(())
         };
@@ -115,7 +115,7 @@ impl CoreDatabase {
                 .with_options(options)
                 .session(session.lock().await.deref_mut())
                 .await
-                .map_err(|e| MongoError::from(e))?;
+                .map_err(MongoError::from)?;
 
             Ok(())
         };
@@ -144,10 +144,10 @@ impl CoreDatabase {
                 .with_options(options)
                 .filter(filter.unwrap_or_default())
                 .await
-                .map_err(|e| MongoError::from(e))?
+                .map_err(MongoError::from)?
                 .try_collect::<Vec<CollectionSpecification>>()
                 .await
-                .map_err(|e| MongoError::from(e))?
+                .map_err(MongoError::from)?
                 .into_iter()
                 .map(CoreCollectionSpecification::from)
                 .collect();
@@ -185,11 +185,11 @@ impl CoreDatabase {
                 .filter(filter.unwrap_or_default())
                 .session(session.deref_mut())
                 .await
-                .map_err(|e| MongoError::from(e))?
-                .stream(&mut session.deref_mut())
+                .map_err(MongoError::from)?
+                .stream(session.deref_mut())
                 .try_collect::<Vec<CollectionSpecification>>()
                 .await
-                .map_err(|e| MongoError::from(e))?
+                .map_err(MongoError::from)?
                 .into_iter()
                 .map(CoreCollectionSpecification::from)
                 .collect();
@@ -210,7 +210,7 @@ impl CoreDatabase {
         let command: Document = command.into();
         let selection_criteria: Option<SelectionCriteria> = options
             .and_then(|o| o.read_preference)
-            .map(|p| SelectionCriteria::ReadPreference(p));
+            .map(SelectionCriteria::ReadPreference);
 
         debug!("{:?}.run_command, command: {:?}", self.name, command);
 
@@ -219,7 +219,7 @@ impl CoreDatabase {
                 .run_command(command)
                 .optional(selection_criteria, |cmd, sc| cmd.selection_criteria(sc))
                 .await
-                .map_err(|e| MongoError::from(e))?
+                .map_err(MongoError::from)?
                 .into();
 
             Ok(result)
@@ -239,7 +239,7 @@ impl CoreDatabase {
         let command: Document = command.into();
         let selection_criteria: Option<SelectionCriteria> = options
             .and_then(|o| o.read_preference)
-            .map(|p| SelectionCriteria::ReadPreference(p));
+            .map(SelectionCriteria::ReadPreference);
 
         debug!(
             "{:?}.run_command_with_session, command: {:?}",
@@ -257,7 +257,7 @@ impl CoreDatabase {
                 command = command.selection_criteria(sc);
             }
 
-            let result: CoreDocument = command.await.map_err(|e| MongoError::from(e))?.into();
+            let result: CoreDocument = command.await.map_err(MongoError::from)?.into();
 
             Ok(result)
         };
@@ -284,7 +284,7 @@ impl CoreDatabase {
                 .aggregate(pipeline)
                 .with_options(options)
                 .await
-                .map_err(|e| MongoError::from(e))?;
+                .map_err(MongoError::from)?;
 
             Ok(CoreCursor::new(cur.with_type()))
         };
@@ -315,7 +315,7 @@ impl CoreDatabase {
                 .with_options(options)
                 .session(session.lock().await.deref_mut())
                 .await
-                .map_err(|e| MongoError::from(e))?;
+                .map_err(MongoError::from)?;
 
             Ok(CoreSessionCursor::new(
                 cur.with_type(),
@@ -350,7 +350,7 @@ impl CoreDatabase {
             db.drop()
                 .with_options(options)
                 .await
-                .map_err(|e| MongoError::from(e))?;
+                .map_err(MongoError::from)?;
             Ok(())
         };
 
@@ -375,7 +375,7 @@ impl CoreDatabase {
                 .with_options(options)
                 .session(session.lock().await.deref_mut())
                 .await
-                .map_err(|e| MongoError::from(e))?;
+                .map_err(MongoError::from)?;
 
             Ok(())
         };

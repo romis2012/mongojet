@@ -77,7 +77,7 @@ impl CoreCollection {
                 .find_one(filter.unwrap_or_default())
                 .with_options(options)
                 .await
-                .map_err(|e| MongoError::from(e))?
+                .map_err(MongoError::from)?
                 .map(Into::into);
 
             Ok(result)
@@ -110,7 +110,7 @@ impl CoreCollection {
                 .with_options(options)
                 .session(session.lock().await.deref_mut())
                 .await
-                .map_err(|e| MongoError::from(e))?
+                .map_err(MongoError::from)?
                 .map(Into::into);
 
             Ok(result)
@@ -141,7 +141,7 @@ impl CoreCollection {
                 .find_one_and_update(filter, update)
                 .with_options(options)
                 .await
-                .map_err(|e| MongoError::from(e))?
+                .map_err(MongoError::from)?
                 .map(Into::into);
 
             Ok(result)
@@ -176,7 +176,7 @@ impl CoreCollection {
                 .with_options(options)
                 .session(session.lock().await.deref_mut())
                 .await
-                .map_err(|e| MongoError::from(e))?
+                .map_err(MongoError::from)?
                 .map(Into::into);
 
             Ok(result)
@@ -207,7 +207,7 @@ impl CoreCollection {
                 .find_one_and_replace(filter, replacement)
                 .with_options(options)
                 .await
-                .map_err(|e| MongoError::from(e))?
+                .map_err(MongoError::from)?
                 .map(Into::into);
 
             Ok(result)
@@ -242,7 +242,7 @@ impl CoreCollection {
                 .with_options(options)
                 .session(session.lock().await.deref_mut())
                 .await
-                .map_err(|e| MongoError::from(e))?
+                .map_err(MongoError::from)?
                 .map(Into::into);
 
             Ok(result)
@@ -270,7 +270,7 @@ impl CoreCollection {
                 .find_one_and_delete(filter)
                 .with_options(options)
                 .await
-                .map_err(|e| MongoError::from(e))?
+                .map_err(MongoError::from)?
                 .map(Into::into);
 
             Ok(result)
@@ -303,7 +303,7 @@ impl CoreCollection {
                 .with_options(options)
                 .session(session.lock().await.deref_mut())
                 .await
-                .map_err(|e| MongoError::from(e))?
+                .map_err(MongoError::from)?
                 .map(Into::into);
 
             Ok(result)
@@ -332,7 +332,7 @@ impl CoreCollection {
                 .find(filter.unwrap_or_default())
                 .with_options(options)
                 .await
-                .map_err(|e| MongoError::from(e))?;
+                .map_err(MongoError::from)?;
 
             Ok(CoreCursor::new(cur))
         };
@@ -364,7 +364,7 @@ impl CoreCollection {
                 .with_options(options)
                 .session(session.lock().await.deref_mut())
                 .await
-                .map_err(|e| MongoError::from(e))?;
+                .map_err(MongoError::from)?;
 
             Ok(CoreSessionCursor::new(cur, Arc::clone(&session)))
         };
@@ -392,10 +392,10 @@ impl CoreCollection {
                 .find(filter.unwrap_or_default())
                 .with_options(options)
                 .await
-                .map_err(|e| MongoError::from(e))?
+                .map_err(MongoError::from)?
                 .try_collect::<Vec<_>>()
                 .await
-                .map_err(|e| MongoError::from(e))?
+                .map_err(MongoError::from)?
                 .into_iter()
                 .map(CoreRawDocument::from)
                 .collect();
@@ -432,11 +432,11 @@ impl CoreCollection {
                 .with_options(options)
                 .session(session.deref_mut())
                 .await
-                .map_err(|e| MongoError::from(e))?
-                .stream(&mut session.deref_mut())
+                .map_err(MongoError::from)?
+                .stream(session.deref_mut())
                 .try_collect::<Vec<_>>()
                 .await
-                .map_err(|e| MongoError::from(e))?
+                .map_err(MongoError::from)?
                 .into_iter()
                 .map(CoreRawDocument::from)
                 .collect();
@@ -466,7 +466,7 @@ impl CoreCollection {
                 .aggregate(pipeline)
                 .with_options(options)
                 .await
-                .map_err(|e| MongoError::from(e))?;
+                .map_err(MongoError::from)?;
 
             Ok(CoreCursor::new(cur.with_type()))
         };
@@ -497,7 +497,7 @@ impl CoreCollection {
                 .with_options(options)
                 .session(session.lock().await.deref_mut())
                 .await
-                .map_err(|e| MongoError::from(e))?;
+                .map_err(MongoError::from)?;
 
             Ok(CoreSessionCursor::new(
                 cur.with_type(),
@@ -529,7 +529,7 @@ impl CoreCollection {
                 .distinct(field_name, filter.unwrap_or_default())
                 .with_options(options)
                 .await
-                .map_err(|e| MongoError::from(e))?
+                .map_err(MongoError::from)?
                 .into();
 
             Ok(result)
@@ -563,7 +563,7 @@ impl CoreCollection {
                 .with_options(options)
                 .session(session.lock().await.deref_mut())
                 .await
-                .map_err(|e| MongoError::from(e))?
+                .map_err(MongoError::from)?
                 .into();
 
             Ok(result)
@@ -596,7 +596,7 @@ impl CoreCollection {
                 .update_one(filter, update)
                 .with_options(options)
                 .await
-                .map_err(|e| MongoError::from(e))?
+                .map_err(MongoError::from)?
                 .into();
 
             Ok(result)
@@ -631,7 +631,7 @@ impl CoreCollection {
                 .with_options(options)
                 .session(session.lock().await.deref_mut())
                 .await
-                .map_err(|e| MongoError::from(e))?
+                .map_err(MongoError::from)?
                 .into();
 
             Ok(result)
@@ -662,7 +662,7 @@ impl CoreCollection {
                 .update_many(filter, update)
                 .with_options(options)
                 .await
-                .map_err(|e| MongoError::from(e))?
+                .map_err(MongoError::from)?
                 .into();
 
             Ok(result)
@@ -697,7 +697,7 @@ impl CoreCollection {
                 .with_options(options)
                 .session(session.lock().await.deref_mut())
                 .await
-                .map_err(|e| MongoError::from(e))?
+                .map_err(MongoError::from)?
                 .into();
 
             Ok(result)
@@ -726,7 +726,7 @@ impl CoreCollection {
                 .insert_one(document)
                 .with_options(options)
                 .await
-                .map_err(|e| MongoError::from(e))?
+                .map_err(MongoError::from)?
                 .into();
 
             Ok(result)
@@ -759,7 +759,7 @@ impl CoreCollection {
                 .with_options(options)
                 .session(session.lock().await.deref_mut())
                 .await
-                .map_err(|e| MongoError::from(e))?
+                .map_err(MongoError::from)?
                 .into();
 
             Ok(result)
@@ -788,7 +788,7 @@ impl CoreCollection {
                 .insert_many(documents)
                 .with_options(options)
                 .await
-                .map_err(|e| MongoError::from(e))?
+                .map_err(MongoError::from)?
                 .into();
 
             Ok(result)
@@ -821,7 +821,7 @@ impl CoreCollection {
                 .with_options(options)
                 .session(session.lock().await.deref_mut())
                 .await
-                .map_err(|e| MongoError::from(e))?
+                .map_err(MongoError::from)?
                 .into();
 
             Ok(result)
@@ -852,7 +852,7 @@ impl CoreCollection {
                 .replace_one(filter, replacement)
                 .with_options(options)
                 .await
-                .map_err(|e| MongoError::from(e))?
+                .map_err(MongoError::from)?
                 .into();
 
             Ok(result)
@@ -887,7 +887,7 @@ impl CoreCollection {
                 .with_options(options)
                 .session(session.lock().await.deref_mut())
                 .await
-                .map_err(|e| MongoError::from(e))?
+                .map_err(MongoError::from)?
                 .into();
 
             Ok(result)
@@ -916,7 +916,7 @@ impl CoreCollection {
                 .delete_one(filter)
                 .with_options(options)
                 .await
-                .map_err(|e| MongoError::from(e))?
+                .map_err(MongoError::from)?
                 .into();
 
             Ok(result)
@@ -949,7 +949,7 @@ impl CoreCollection {
                 .with_options(options)
                 .session(session.lock().await.deref_mut())
                 .await
-                .map_err(|e| MongoError::from(e))?
+                .map_err(MongoError::from)?
                 .into();
 
             Ok(result)
@@ -978,7 +978,7 @@ impl CoreCollection {
                 .delete_many(filter)
                 .with_options(options)
                 .await
-                .map_err(|e| MongoError::from(e))?
+                .map_err(MongoError::from)?
                 .into();
 
             Ok(result)
@@ -1011,7 +1011,7 @@ impl CoreCollection {
                 .with_options(options)
                 .session(session.lock().await.deref_mut())
                 .await
-                .map_err(|e| MongoError::from(e))?
+                .map_err(MongoError::from)?
                 .into();
 
             Ok(result)
@@ -1040,7 +1040,7 @@ impl CoreCollection {
                 .count_documents(filter.unwrap_or_default())
                 .with_options(options)
                 .await
-                .map_err(|e| MongoError::from(e))?;
+                .map_err(MongoError::from)?;
 
             Ok(result)
         };
@@ -1072,7 +1072,7 @@ impl CoreCollection {
                 .with_options(options)
                 .session(session.lock().await.deref_mut())
                 .await
-                .map_err(|e| MongoError::from(e))?;
+                .map_err(MongoError::from)?;
 
             Ok(result)
         };
@@ -1098,7 +1098,7 @@ impl CoreCollection {
                 .estimated_document_count()
                 .with_options(options)
                 .await
-                .map_err(|e| MongoError::from(e))?;
+                .map_err(MongoError::from)?;
 
             Ok(result)
         };
@@ -1127,7 +1127,7 @@ impl CoreCollection {
                 .with_options(options)
                 .await
                 // .map_err(Into::<MongoError>::into)?
-                .map_err(|e| MongoError::from(e))?
+                .map_err(MongoError::from)?
                 .into();
 
             Ok(result)
@@ -1160,7 +1160,7 @@ impl CoreCollection {
                 .with_options(options)
                 .session(session.lock().await.deref_mut())
                 .await
-                .map_err(|e| MongoError::from(e))?
+                .map_err(MongoError::from)?
                 .into();
 
             Ok(result)
@@ -1189,7 +1189,7 @@ impl CoreCollection {
                 .create_indexes(model)
                 .with_options(options)
                 .await
-                .map_err(|e| MongoError::from(e))?
+                .map_err(MongoError::from)?
                 .into();
 
             Ok(result)
@@ -1222,7 +1222,7 @@ impl CoreCollection {
                 .with_options(options)
                 .session(session.lock().await.deref_mut())
                 .await
-                .map_err(|e| MongoError::from(e))?
+                .map_err(MongoError::from)?
                 .into();
 
             Ok(result)
@@ -1250,7 +1250,7 @@ impl CoreCollection {
                 .drop_index(name)
                 .with_options(options)
                 .await
-                .map_err(|e| MongoError::from(e))?;
+                .map_err(MongoError::from)?;
 
             Ok(())
         };
@@ -1281,7 +1281,7 @@ impl CoreCollection {
                 .with_options(options)
                 .session(session.lock().await.deref_mut())
                 .await
-                .map_err(|e| MongoError::from(e))?;
+                .map_err(MongoError::from)?;
 
             Ok(())
         };
@@ -1301,7 +1301,7 @@ impl CoreCollection {
                 .drop_indexes()
                 .with_options(options)
                 .await
-                .map_err(|e| MongoError::from(e))?;
+                .map_err(MongoError::from)?;
 
             Ok(())
         };
@@ -1331,7 +1331,7 @@ impl CoreCollection {
                 .with_options(options)
                 .session(session.lock().await.deref_mut())
                 .await
-                .map_err(|e| MongoError::from(e))?;
+                .map_err(MongoError::from)?;
 
             Ok(())
         };
@@ -1354,10 +1354,10 @@ impl CoreCollection {
                 .list_indexes()
                 .with_options(options)
                 .await
-                .map_err(|e| MongoError::from(e))?
+                .map_err(MongoError::from)?
                 .try_collect::<Vec<IndexModel>>()
                 .await
-                .map_err(|e| MongoError::from(e))?
+                .map_err(MongoError::from)?
                 .into_iter()
                 .map(CoreIndexModel::from)
                 .collect();
@@ -1391,11 +1391,11 @@ impl CoreCollection {
                 .with_options(options)
                 .session(session.deref_mut())
                 .await
-                .map_err(|e| MongoError::from(e))?
-                .stream(&mut session.deref_mut())
+                .map_err(MongoError::from)?
+                .stream(session.deref_mut())
                 .try_collect::<Vec<IndexModel>>()
                 .await
-                .map_err(|e| MongoError::from(e))?
+                .map_err(MongoError::from)?
                 .into_iter()
                 .map(CoreIndexModel::from)
                 .collect();
@@ -1418,7 +1418,7 @@ impl CoreCollection {
                 .drop()
                 .with_options(options)
                 .await
-                .map_err(|e| MongoError::from(e))?;
+                .map_err(MongoError::from)?;
 
             Ok(())
         };
@@ -1445,7 +1445,7 @@ impl CoreCollection {
                 .with_options(options)
                 .session(session.lock().await.deref_mut())
                 .await
-                .map_err(|e| MongoError::from(e))?;
+                .map_err(MongoError::from)?;
 
             Ok(())
         };

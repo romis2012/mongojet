@@ -35,14 +35,14 @@ impl CoreCursor {
                 .await
                 .try_next()
                 .await
-                .map_err(|e| MongoError::from(e))?
+                .map_err(MongoError::from)?
                 .map(Into::into);
 
             if let Some(doc) = result {
                 return Ok(doc);
             }
 
-            return Err(PyStopAsyncIteration::new_err("StopAsyncIteration"));
+            Err(PyStopAsyncIteration::new_err("StopAsyncIteration"))
         };
 
         spawn(fut).await?
@@ -55,7 +55,7 @@ impl CoreCursor {
             let mut result: Vec<CoreRawDocument> = Vec::new();
             let mut cursor = cursor.lock().await;
 
-            while let Some(doc) = cursor.try_next().await.map_err(|e| MongoError::from(e))? {
+            while let Some(doc) = cursor.try_next().await.map_err(MongoError::from)? {
                 result.push(doc.into());
             }
 
@@ -72,7 +72,7 @@ impl CoreCursor {
             let mut cursor = cursor.lock().await;
 
             for _ in 0..batch_size {
-                let ok = cursor.advance().await.map_err(|e| MongoError::from(e))?;
+                let ok = cursor.advance().await.map_err(MongoError::from)?;
 
                 if !ok {
                     break;
@@ -80,7 +80,7 @@ impl CoreCursor {
 
                 let doc: CoreRawDocument = cursor
                     .deserialize_current()
-                    .map_err(|e| MongoError::from(e))?
+                    .map_err(MongoError::from)?
                     .into();
 
                 result.push(doc);
@@ -118,17 +118,17 @@ impl CoreSessionCursor {
             let result: Option<CoreRawDocument> = cursor
                 .lock()
                 .await
-                .next(&mut session.lock().await.deref_mut())
+                .next(session.lock().await.deref_mut())
                 .await
                 .transpose()
-                .map_err(|e| MongoError::from(e))?
+                .map_err(MongoError::from)?
                 .map(Into::into);
 
             if let Some(doc) = result {
                 return Ok(doc);
             }
 
-            return Err(PyStopAsyncIteration::new_err("StopAsyncIteration"));
+            Err(PyStopAsyncIteration::new_err("StopAsyncIteration"))
         };
 
         spawn(fut).await?
@@ -146,10 +146,10 @@ impl CoreSessionCursor {
 
             for _ in 0..batch_size {
                 if let Some(doc) = cursor
-                    .next(&mut session.deref_mut())
+                    .next(session.deref_mut())
                     .await
                     .transpose()
-                    .map_err(|e| MongoError::from(e))?
+                    .map_err(MongoError::from)?
                 {
                     result.push(doc.into());
                 } else {
@@ -157,7 +157,7 @@ impl CoreSessionCursor {
                 }
             }
 
-            return Ok(result);
+            Ok(result)
         };
 
         spawn(fut).await?
@@ -174,15 +174,15 @@ impl CoreSessionCursor {
             let mut session = session.lock().await;
 
             while let Some(doc) = cursor
-                .next(&mut session.deref_mut())
+                .next(session.deref_mut())
                 .await
                 .transpose()
-                .map_err(|e| MongoError::from(e))?
+                .map_err(MongoError::from)?
             {
                 result.push(doc.into());
             }
 
-            return Ok(result);
+            Ok(result)
         };
 
         spawn(fut).await?
