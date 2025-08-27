@@ -6,6 +6,8 @@ build-backend = "maturin"
 name = "mongojet"
 description = "Async MongoDB client for Python"
 authors = [{name = "Roman Snegirev", email = "snegiryev@gmail.com"}]
+readme = "README.md"
+license = {file = "LICENSE.txt"}
 requires-python = ">=3.9"
 classifiers = [
     "Development Status :: 4 - Beta",

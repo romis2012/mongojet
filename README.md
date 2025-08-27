@@ -10,7 +10,7 @@ It uses [Rust MongoDB driver](https://github.com/mongodb/mongo-rust-driver) and 
 Mongojet is 2-4x faster than Motor (and 1.5-3.5x faster than PyMongo AsyncMongoClient) in high concurrency scenarios (see benchmarks below).
 
 ## Requirements
-- Python >= 3.8
+- Python >= 3.9
 - pymongo>=4.6.2 (only `bson` package is required)
 
 
