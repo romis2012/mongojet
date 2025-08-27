@@ -1,6 +1,6 @@
 maturin[patchelf]>=1.5.0,<2.0
 typing_extensions>=4.10.0
-pymongo>=4.14
+pymongo>=4.10
 motor>=3.3.2
 flake8>=3.9.1
 flake8-pyproject>=1.2.3
