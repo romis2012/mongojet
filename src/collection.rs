@@ -102,7 +102,7 @@ impl CoreCollection {
             self.full_name, filter, options
         );
 
-        let session = Python::with_gil(|py| session.borrow(py).session.clone());
+        let session = Python::attach(|py| session.borrow(py).session.clone());
 
         let fut = async move {
             let result: Option<CoreRawDocument> = collection
@@ -168,7 +168,7 @@ impl CoreCollection {
             self.full_name, filter, update, options
         );
 
-        let session = Python::with_gil(|py| session.borrow(py).session.clone());
+        let session = Python::attach(|py| session.borrow(py).session.clone());
 
         let fut = async move {
             let result: Option<CoreRawDocument> = collection
@@ -234,7 +234,7 @@ impl CoreCollection {
             self.full_name, filter, replacement, options
         );
 
-        let session = Python::with_gil(|py| session.borrow(py).session.clone());
+        let session = Python::attach(|py| session.borrow(py).session.clone());
 
         let fut = async move {
             let result: Option<CoreRawDocument> = collection
@@ -295,7 +295,7 @@ impl CoreCollection {
             self.full_name, filter, options
         );
 
-        let session = Python::with_gil(|py| session.borrow(py).session.clone());
+        let session = Python::attach(|py| session.borrow(py).session.clone());
 
         let fut = async move {
             let result: Option<CoreRawDocument> = collection
@@ -356,7 +356,7 @@ impl CoreCollection {
             self.full_name, filter, options
         );
 
-        let session = Python::with_gil(|py| session.borrow(py).session.clone());
+        let session = Python::attach(|py| session.borrow(py).session.clone());
 
         let fut = async move {
             let cur = collection
@@ -422,7 +422,7 @@ impl CoreCollection {
             self.full_name, filter, options
         );
 
-        let session = Python::with_gil(|py| session.borrow(py).session.clone());
+        let session = Python::attach(|py| session.borrow(py).session.clone());
 
         let fut = async move {
             let mut session = session.lock().await;
@@ -489,7 +489,7 @@ impl CoreCollection {
             self.full_name, pipeline, options
         );
 
-        let session = Python::with_gil(|py| session.borrow(py).session.clone());
+        let session = Python::attach(|py| session.borrow(py).session.clone());
 
         let fut = async move {
             let cur = collection
@@ -555,7 +555,7 @@ impl CoreCollection {
             self.full_name, field_name, filter, options
         );
 
-        let session = Python::with_gil(|py| session.borrow(py).session.clone());
+        let session = Python::attach(|py| session.borrow(py).session.clone());
 
         let fut = async move {
             let result: CoreDistinctResult = collection
@@ -623,7 +623,7 @@ impl CoreCollection {
             self.full_name, filter, update, options
         );
 
-        let session = Python::with_gil(|py| session.borrow(py).session.clone());
+        let session = Python::attach(|py| session.borrow(py).session.clone());
 
         let fut = async move {
             let result: CoreUpdateResult = collection
@@ -689,7 +689,7 @@ impl CoreCollection {
             self.full_name, filter, update, options
         );
 
-        let session = Python::with_gil(|py| session.borrow(py).session.clone());
+        let session = Python::attach(|py| session.borrow(py).session.clone());
 
         let fut = async move {
             let result: CoreUpdateResult = collection
@@ -751,7 +751,7 @@ impl CoreCollection {
             self.full_name, document, options
         );
 
-        let session = Python::with_gil(|py| session.borrow(py).session.clone());
+        let session = Python::attach(|py| session.borrow(py).session.clone());
 
         let fut = async move {
             let result: CoreInsertOneResult = collection
@@ -813,7 +813,7 @@ impl CoreCollection {
             self.full_name, documents, options
         );
 
-        let session = Python::with_gil(|py| session.borrow(py).session.clone());
+        let session = Python::attach(|py| session.borrow(py).session.clone());
 
         let fut = async move {
             let result: CoreInsertManyResult = collection
@@ -879,7 +879,7 @@ impl CoreCollection {
             self.full_name, filter, replacement, options
         );
 
-        let session = Python::with_gil(|py| session.borrow(py).session.clone());
+        let session = Python::attach(|py| session.borrow(py).session.clone());
 
         let fut = async move {
             let result: CoreUpdateResult = collection
@@ -941,7 +941,7 @@ impl CoreCollection {
             self.full_name, filter, options
         );
 
-        let session = Python::with_gil(|py| session.borrow(py).session.clone());
+        let session = Python::attach(|py| session.borrow(py).session.clone());
 
         let fut = async move {
             let result: CoreDeleteResult = collection
@@ -1003,7 +1003,7 @@ impl CoreCollection {
             self.full_name, filter, options
         );
 
-        let session = Python::with_gil(|py| session.borrow(py).session.clone());
+        let session = Python::attach(|py| session.borrow(py).session.clone());
 
         let fut = async move {
             let result: CoreDeleteResult = collection
@@ -1064,7 +1064,7 @@ impl CoreCollection {
             self.full_name, filter, options
         );
 
-        let session = Python::with_gil(|py| session.borrow(py).session.clone());
+        let session = Python::attach(|py| session.borrow(py).session.clone());
 
         let fut = async move {
             let result = collection
@@ -1152,7 +1152,7 @@ impl CoreCollection {
             self.full_name, model, options
         );
 
-        let session = Python::with_gil(|py| session.borrow(py).session.clone());
+        let session = Python::attach(|py| session.borrow(py).session.clone());
 
         let fut = async move {
             let result: CoreCreateIndexResult = collection
@@ -1214,7 +1214,7 @@ impl CoreCollection {
             self.full_name, model, options
         );
 
-        let session = Python::with_gil(|py| session.borrow(py).session.clone());
+        let session = Python::attach(|py| session.borrow(py).session.clone());
 
         let fut = async move {
             let result: CoreCreateIndexesResult = collection
@@ -1273,7 +1273,7 @@ impl CoreCollection {
             self.full_name, name, options
         );
 
-        let session = Python::with_gil(|py| session.borrow(py).session.clone());
+        let session = Python::attach(|py| session.borrow(py).session.clone());
 
         let fut = async move {
             collection
@@ -1323,7 +1323,7 @@ impl CoreCollection {
             self.full_name, options
         );
 
-        let session = Python::with_gil(|py| session.borrow(py).session.clone());
+        let session = Python::attach(|py| session.borrow(py).session.clone());
 
         let fut = async move {
             collection
@@ -1382,7 +1382,7 @@ impl CoreCollection {
             self.full_name, options
         );
 
-        let session = Python::with_gil(|py| session.borrow(py).session.clone());
+        let session = Python::attach(|py| session.borrow(py).session.clone());
 
         let fut = async move {
             let mut session = session.lock().await;
@@ -1437,7 +1437,7 @@ impl CoreCollection {
 
         debug!("{:?}.drop, options: {:?}", self.full_name, options);
 
-        let session = Python::with_gil(|py| session.borrow(py).session.clone());
+        let session = Python::attach(|py| session.borrow(py).session.clone());
 
         let fut = async move {
             collection

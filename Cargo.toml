@@ -9,8 +9,8 @@ name = "mongojet"
 crate-type = ["cdylib"]
 
 [dependencies]
-pyo3 = { version = "0.25", features = ["full"] }
-pyo3-log={version = ">=0.12.4, <0.13" }
+pyo3 = { version = "0.26", features = ["full"] }
+# pyo3-log={version = ">=0.12.4, <0.13" }
 tokio = { version = "1.45", features = ["full"] }
 futures = "0.3"
 

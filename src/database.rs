@@ -108,7 +108,7 @@ impl CoreDatabase {
             self.name, options
         );
 
-        let session = Python::with_gil(|py| session.borrow(py).session.clone());
+        let session = Python::attach(|py| session.borrow(py).session.clone());
 
         let fut = async move {
             db.create_collection(name)
@@ -174,7 +174,7 @@ impl CoreDatabase {
             self.name, filter, options
         );
 
-        let session = Python::with_gil(|py| session.borrow(py).session.clone());
+        let session = Python::attach(|py| session.borrow(py).session.clone());
 
         let fut = async move {
             let mut session = session.lock().await;
@@ -246,7 +246,7 @@ impl CoreDatabase {
             self.name, command
         );
 
-        let session = Python::with_gil(|py| session.borrow(py).session.clone());
+        let session = Python::attach(|py| session.borrow(py).session.clone());
 
         let fut = async move {
             let mut session = session.lock().await;
@@ -307,7 +307,7 @@ impl CoreDatabase {
             self.name, pipeline, options
         );
 
-        let session = Python::with_gil(|py| session.borrow(py).session.clone());
+        let session = Python::attach(|py| session.borrow(py).session.clone());
 
         let fut = async move {
             let cur = db
@@ -368,7 +368,7 @@ impl CoreDatabase {
 
         debug!("{:?}.drop_with_session, options: {:?}", self.name, options);
 
-        let session = Python::with_gil(|py| session.borrow(py).session.clone());
+        let session = Python::attach(|py| session.borrow(py).session.clone());
 
         let fut = async move {
             db.drop()
