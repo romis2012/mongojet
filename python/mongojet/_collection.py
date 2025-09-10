@@ -28,6 +28,7 @@ from ._types import (
     DeleteResult,
     IndexKeys,
     IndexModel,
+    CreateIndexArgs,
     CreateIndexOptions,
     CreateIndexResult,
     CreateIndexesResult,
@@ -482,7 +483,7 @@ class Collection:
         self,
         keys: IndexKeys,
         session: Optional[ClientSession] = None,
-        **kwargs: Any,  # IndexModelDef (wo "key") and CreateIndexOptions keys
+        **kwargs: Unpack[CreateIndexArgs],
     ) -> CreateIndexResult:
 
         options = {}

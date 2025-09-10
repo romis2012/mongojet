@@ -16,6 +16,11 @@ try:
 except ImportError:
     from typing_extensions import Required
 
+try:
+    from typing import Unpack
+except ImportError:
+    from typing_extensions import Unpack
+
 Document = Dict[str, Any]
 
 ReadConcernLevel = Literal[
@@ -298,35 +303,6 @@ class DeleteResult(TypedDict):
     deleted_count: int
 
 
-IndexModelDef = TypedDict(
-    'IndexModelDef',
-    {
-        'key': Required[Document],
-        'name': Optional[str],
-        'unique': Optional[bool],
-        'background': Optional[bool],
-        'expireAfterSeconds': Optional[int],
-        'sparse': Optional[bool],
-        'storageEngine': Optional[Document],
-        'v': Optional[int],
-        'default_language': Optional[str],
-        'language_override': Optional[str],
-        'textIndexVersion': Optional[int],
-        'weights': Optional[Document],
-        '2dsphereIndexVersion': Optional[int],
-        'bits': Optional[int],
-        'min': Optional[int],
-        'max': Optional[int],
-        'bucketSize': Optional[int],
-        'partialFilterExpression': Optional[Document],
-        'collation': Optional[Collation],
-        'wildcardProjection': Optional[Document],
-        'hidden': Optional[bool],
-        'clustered': Optional[bool],
-    },
-)
-
-
 CommitQuorum = Union[
     Literal['votingMembers', 'majority'],
     str,  # replica set tag name
@@ -353,8 +329,44 @@ class ListIndexesOptions(TypedDict, total=False):
     batchSize: Optional[int]
 
 
-# class IndexOptions(IndexModelDef, CreateIndexOptions):
-#     pass
+class IndexKeysDef(TypedDict):
+    key: Document
+
+
+IndexOptionsDef = TypedDict(
+    'IndexOptionsDef',
+    {
+        'name': Optional[str],
+        'unique': Optional[bool],
+        'background': Optional[bool],
+        'expireAfterSeconds': Optional[int],
+        'sparse': Optional[bool],
+        'storageEngine': Optional[Document],
+        'v': Optional[int],
+        'default_language': Optional[str],
+        'language_override': Optional[str],
+        'textIndexVersion': Optional[int],
+        'weights': Optional[Document],
+        '2dsphereIndexVersion': Optional[int],  # or sphere2dIndexVersion
+        'bits': Optional[int],
+        'min': Optional[int],
+        'max': Optional[int],
+        'bucketSize': Optional[int],
+        'partialFilterExpression': Optional[Document],
+        'collation': Optional[Collation],
+        'wildcardProjection': Optional[Document],
+        'hidden': Optional[bool],
+        'clustered': Optional[bool],
+    },
+)
+
+
+class IndexModelDef(IndexKeysDef, IndexOptionsDef):
+    pass
+
+
+class CreateIndexArgs(IndexOptionsDef, CreateIndexOptions):
+    pass
 
 
 class CreateIndexResult(TypedDict):
@@ -378,7 +390,8 @@ class IndexModel:
 
     __slots__ = ("__document",)
 
-    def __init__(self, keys: IndexKeys, **kwargs: Any) -> None:
+    def __init__(self, keys: IndexKeys, **kwargs: Unpack[IndexOptionsDef]) -> None:
+        # pylint:disable-next=import-outside-toplevel
         from ._helpers import create_index_model
 
         self.__document = create_index_model(keys, **kwargs)

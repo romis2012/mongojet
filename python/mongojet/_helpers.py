@@ -7,10 +7,15 @@ from __future__ import annotations
 from collections import abc
 from typing import Union, Sequence, Mapping, Any, Optional, TYPE_CHECKING
 
+try:
+    from typing import Unpack
+except ImportError:
+    from typing_extensions import Unpack
+
 from bson import SON
 
 if TYPE_CHECKING:
-    from ._types import IndexList, IndexKeys, IndexModelDef
+    from ._types import IndexList, IndexKeys, IndexOptionsDef, IndexModelDef
 
 ASCENDING = 1
 """Ascending sort order."""
@@ -24,7 +29,10 @@ DESCENDING = -1
 # _Hint = Union[str, _Sort]
 
 
-def create_index_model(key_or_list: IndexKeys, **kwargs: Any) -> 'IndexModelDef':
+def create_index_model(
+    key_or_list: IndexKeys,
+    **kwargs: Unpack[IndexOptionsDef],
+) -> IndexModelDef:
     # fix arg types
     if 'expireAfterSeconds' in kwargs:
         kwargs['expireAfterSeconds'] = int(kwargs.pop('expireAfterSeconds'))
