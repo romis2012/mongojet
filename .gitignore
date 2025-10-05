@@ -72,7 +72,7 @@ docs/_build/
 .python-version
 
 test_scripts/
-build.Dockerfile
+build.dockerfile
 build.sh
 
 .benchmarks/
