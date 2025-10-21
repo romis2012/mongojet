@@ -1,9 +1,11 @@
 #[rustfmt::skip]
 macro_rules! from_py_object {
     ($t:ident) => {
-        impl<'py> FromPyObject<'py> for $t {
-            fn extract_bound(ob: &Bound<'py, PyAny>) -> PyResult<Self> {
-                let bytes = ob.extract::<&[u8]>()?;
+        impl<'py> FromPyObject<'_, 'py> for $t {
+            type Error = PyErr;
+
+            fn extract(obj: Borrowed<'_, 'py, PyAny>) -> Result<Self, Self::Error> {
+                let bytes = obj.extract::<&[u8]>()?;
                 let result = bson::deserialize_from_slice(bytes)
                     .map_err(|e| PyValueError::new_err(e.to_string()))?;
                 Ok(result)

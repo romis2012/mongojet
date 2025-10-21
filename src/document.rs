@@ -20,9 +20,11 @@ impl Into<Document> for CoreDocument {
 }
 
 #[rustfmt::skip]
-impl<'a> FromPyObject<'a> for CoreDocument {
-    fn extract_bound(ob: &Bound<'a, PyAny>) -> PyResult<Self> {
-        let mut data = ob.extract::<&[u8]>()?;
+impl<'py> FromPyObject<'_, 'py> for CoreDocument {
+    type Error = PyErr;
+    
+    fn extract(obj: Borrowed<'_, 'py, PyAny>) -> Result<Self, Self::Error> {
+        let mut data = obj.extract::<&[u8]>()?;
         let doc = Document::from_reader(&mut data)
             .map_err(|e| PyValueError::new_err(e.to_string()))?;
 
@@ -60,9 +62,11 @@ impl Into<Vec<Document>> for CorePipeline {
     }
 }
 
-impl<'a> FromPyObject<'a> for CorePipeline {
-    fn extract_bound(ob: &Bound<'a, PyAny>) -> PyResult<Self> {
-        let list = ob.extract::<Vec<Vec<u8>>>()?; //list of bytes
+impl<'py> FromPyObject<'_, 'py> for CorePipeline {
+    type Error = PyErr;
+
+    fn extract(obj: Borrowed<'_, 'py, PyAny>) -> Result<Self, Self::Error> {
+        let list = obj.extract::<Vec<Vec<u8>>>()?; //list of bytes
         let mut result = Vec::with_capacity(list.len());
 
         for bytes in list.into_iter() {
@@ -91,12 +95,14 @@ pub enum CoreCompoundDocument {
     Pipeline(CorePipeline),
 }
 
-impl<'a> FromPyObject<'a> for CoreCompoundDocument {
-    fn extract_bound(ob: &Bound<'a, PyAny>) -> PyResult<Self> {
-        if let Ok(pipeline) = ob.extract::<CorePipeline>() {
+impl<'py> FromPyObject<'_, 'py> for CoreCompoundDocument {
+    type Error = PyErr;
+
+    fn extract(obj: Borrowed<'_, 'py, PyAny>) -> Result<Self, Self::Error> {
+        if let Ok(pipeline) = obj.extract::<CorePipeline>() {
             return Ok(CoreCompoundDocument::Pipeline(pipeline));
         }
-        if let Ok(doc) = ob.extract::<CoreDocument>() {
+        if let Ok(doc) = obj.extract::<CoreDocument>() {
             return Ok(CoreCompoundDocument::Doc(doc));
         }
         Err(PyValueError::new_err(
@@ -140,9 +146,11 @@ impl<'py> IntoPyObject<'py> for CoreRawDocument {
     }
 }
 
-impl<'a> FromPyObject<'a> for CoreRawDocument {
-    fn extract_bound(ob: &Bound<'a, PyAny>) -> PyResult<Self> {
-        let data = ob.extract::<&[u8]>()?;
+impl<'py> FromPyObject<'_, 'py> for CoreRawDocument {
+    type Error = PyErr;
+
+    fn extract(obj: Borrowed<'_, 'py, PyAny>) -> Result<Self, Self::Error> {
+        let data = obj.extract::<&[u8]>()?;
         let doc = RawDocumentBuf::from_bytes(data.into())
             .map_err(|e| PyValueError::new_err(e.to_string()))?;
         Ok(CoreRawDocument(doc))

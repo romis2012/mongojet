@@ -28,9 +28,9 @@ use error::{DuplicateKeyError, OperationFailure, PyMongoError, WriteConcernError
 #[rustfmt::skip]
 #[pymodule]
 fn mongojet(_py: Python, m: &Bound<'_, PyModule>) -> PyResult<()> {
-    if cfg!(debug_assertions) {
-        pyo3_log::init();
-    }
+    // if cfg!(debug_assertions) {
+    //     pyo3_log::init();
+    // }
 
     m.add_function(wrap_pyfunction!(core_create_client, m)?)?;
 
