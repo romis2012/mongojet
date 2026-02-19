@@ -49,7 +49,10 @@ async def test_transaction_aggregate(db: Database):
         values = [i for i in range(5)]
         await collection.insert_many([{'a': i} for i in values], session=session)
 
-        cur = await collection.aggregate(pipeline=[{"$sort": {'a': 1}}], session=session)
+        cur = await collection.aggregate(
+            pipeline=[{"$sort": {'a': 1}}],
+            session=session,
+        )
         assert sorted(values) == [doc['a'] async for doc in cur]
 
         cur = await collection.aggregate(pipeline=[{"$sort": {'a': 1}}])

@@ -2,7 +2,7 @@ from typing import Any, Optional
 
 from bson import CodecOptions
 
-from .mongojet import PyMongoError, NoFile, FileExists, DuplicateKeyError
+from .mongojet import FileExists, DuplicateKeyError
 from ._codec import Codec
 from ._types import GridFsPutResult
 

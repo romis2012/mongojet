@@ -422,7 +422,7 @@ impl CoreCollection {
 
         let session = Python::attach(|py| session.borrow(py).session.clone());
 
-         let fut = async move {
+        let fut = async move {
             let cur = collection
                 .find(filter.unwrap_or_default())
                 .with_options(options)
@@ -431,7 +431,9 @@ impl CoreCollection {
                 .await
                 .map_err(MongoError::from)?;
 
-            CoreSessionBatchCursor::new(cur, Arc::clone(&session)).collect().await
+            CoreSessionBatchCursor::new(cur, Arc::clone(&session))
+                .collect()
+                .await
         };
 
         spawn(fut).await?
