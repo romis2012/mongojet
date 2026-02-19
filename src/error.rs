@@ -105,6 +105,12 @@ impl From<mongodb::error::Error> for MongoError {
     }
 }
 
+impl From<bson::error::Error> for MongoError {
+    fn from(value: bson::error::Error) -> Self {
+        MongoError(mongodb::error::Error::from(value))
+    }
+}
+
 impl From<MongoError> for PyErr {
     fn from(value: MongoError) -> Self {
         let msg = value.clone().to_string();

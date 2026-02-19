@@ -21,7 +21,6 @@ use crate::error::{
 };
 use client::{core_create_client, CoreClient};
 use collection::CoreCollection;
-use cursor::CoreCursor;
 use database::CoreDatabase;
 use error::{DuplicateKeyError, OperationFailure, PyMongoError, WriteConcernError, WriteError};
 
@@ -37,7 +36,6 @@ fn mongojet(_py: Python, m: &Bound<'_, PyModule>) -> PyResult<()> {
     m.add_class::<CoreClient>()?;
     m.add_class::<CoreDatabase>()?;
     m.add_class::<CoreCollection>()?;
-    m.add_class::<CoreCursor>()?;
 
     m.add("PyMongoError", m.py().get_type::<PyMongoError>())?;
     m.add("OperationFailure", m.py().get_type::<OperationFailure>())?;

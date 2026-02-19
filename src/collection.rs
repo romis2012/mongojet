@@ -14,8 +14,10 @@ use mongodb::options::{
 use mongodb::{Collection, IndexModel};
 use pyo3::prelude::*;
 
-use crate::cursor::{CoreCursor, CoreSessionCursor};
-use crate::document::{CoreCompoundDocument, CoreDocument, CorePipeline, CoreRawDocument};
+use crate::cursor::{CoreBatchCursor, CoreSessionBatchCursor};
+use crate::document::{
+    CoreCompoundDocument, CoreDocument, CorePipeline, CoreRawArray, CoreRawDocument,
+};
 use crate::result::{
     CoreCreateIndexResult, CoreCreateIndexesResult, CoreDeleteResult, CoreDistinctResult,
     CoreInsertManyResult, CoreInsertOneResult, CoreUpdateResult, ReadConcernResult,
@@ -316,7 +318,7 @@ impl CoreCollection {
         &self,
         filter: Option<CoreDocument>,
         options: Option<CoreFindOptions>,
-    ) -> PyResult<CoreCursor> {
+    ) -> PyResult<CoreBatchCursor> {
         let collection = self.collection.clone();
 
         let filter: Option<Document> = filter.map(Into::into);
@@ -331,10 +333,11 @@ impl CoreCollection {
             let cur = collection
                 .find(filter.unwrap_or_default())
                 .with_options(options)
+                .batch()
                 .await
                 .map_err(MongoError::from)?;
 
-            Ok(CoreCursor::new(cur))
+            Ok(CoreBatchCursor::new(cur))
         };
 
         spawn(fut).await?
@@ -345,7 +348,7 @@ impl CoreCollection {
         session: Py<CoreSession>,
         filter: Option<CoreDocument>,
         options: Option<CoreFindOptions>,
-    ) -> PyResult<CoreSessionCursor> {
+    ) -> PyResult<CoreSessionBatchCursor> {
         let collection = self.collection.clone();
 
         let filter: Option<Document> = filter.map(Into::into);
@@ -363,10 +366,11 @@ impl CoreCollection {
                 .find(filter.unwrap_or_default())
                 .with_options(options)
                 .session(session.lock().await.deref_mut())
+                .batch()
                 .await
                 .map_err(MongoError::from)?;
 
-            Ok(CoreSessionCursor::new(cur, Arc::clone(&session)))
+            Ok(CoreSessionBatchCursor::new(cur, Arc::clone(&session)))
         };
 
         spawn(fut).await?
@@ -376,7 +380,7 @@ impl CoreCollection {
         &self,
         filter: Option<CoreDocument>,
         options: Option<CoreFindOptions>,
-    ) -> PyResult<Vec<CoreRawDocument>> {
+    ) -> PyResult<CoreRawArray> {
         let collection = self.collection.clone();
 
         let filter: Option<Document> = filter.map(Into::into);
@@ -386,21 +390,15 @@ impl CoreCollection {
             "{:?}.find_many, filter: {:?}, options: {:?}",
             self.full_name, filter, options
         );
-
         let fut = async move {
-            let docs: Vec<CoreRawDocument> = collection
+            let cur = collection
                 .find(filter.unwrap_or_default())
                 .with_options(options)
+                .batch()
                 .await
-                .map_err(MongoError::from)?
-                .try_collect::<Vec<_>>()
-                .await
-                .map_err(MongoError::from)?
-                .into_iter()
-                .map(CoreRawDocument::from)
-                .collect();
+                .map_err(MongoError::from)?;
 
-            Ok(docs)
+            CoreBatchCursor::new(cur).collect().await
         };
 
         spawn(fut).await?
@@ -411,7 +409,7 @@ impl CoreCollection {
         session: Py<CoreSession>,
         filter: Option<CoreDocument>,
         options: Option<CoreFindOptions>,
-    ) -> PyResult<Vec<CoreRawDocument>> {
+    ) -> PyResult<CoreRawArray> {
         let collection = self.collection.clone();
 
         let filter: Option<Document> = filter.map(Into::into);
@@ -424,24 +422,16 @@ impl CoreCollection {
 
         let session = Python::attach(|py| session.borrow(py).session.clone());
 
-        let fut = async move {
-            let mut session = session.lock().await;
-
-            let docs: Vec<CoreRawDocument> = collection
+         let fut = async move {
+            let cur = collection
                 .find(filter.unwrap_or_default())
                 .with_options(options)
-                .session(session.deref_mut())
+                .session(session.lock().await.deref_mut())
+                .batch()
                 .await
-                .map_err(MongoError::from)?
-                .stream(session.deref_mut())
-                .try_collect::<Vec<_>>()
-                .await
-                .map_err(MongoError::from)?
-                .into_iter()
-                .map(CoreRawDocument::from)
-                .collect();
+                .map_err(MongoError::from)?;
 
-            Ok(docs)
+            CoreSessionBatchCursor::new(cur, Arc::clone(&session)).collect().await
         };
 
         spawn(fut).await?
@@ -451,7 +441,7 @@ impl CoreCollection {
         &self,
         pipeline: CorePipeline,
         options: Option<CoreAggregateOptions>,
-    ) -> PyResult<CoreCursor> {
+    ) -> PyResult<CoreBatchCursor> {
         let collection = self.collection.clone();
 
         let options: Option<AggregateOptions> = options.map(Into::into);
@@ -465,10 +455,11 @@ impl CoreCollection {
             let cur = collection
                 .aggregate(pipeline)
                 .with_options(options)
+                .batch()
                 .await
                 .map_err(MongoError::from)?;
 
-            Ok(CoreCursor::new(cur.with_type()))
+            Ok(CoreBatchCursor::new(cur))
         };
 
         spawn(fut).await?
@@ -479,7 +470,7 @@ impl CoreCollection {
         session: Py<CoreSession>,
         pipeline: CorePipeline,
         options: Option<CoreAggregateOptions>,
-    ) -> PyResult<CoreSessionCursor> {
+    ) -> PyResult<CoreSessionBatchCursor> {
         let collection = self.collection.clone();
 
         let options: Option<AggregateOptions> = options.map(Into::into);
@@ -496,13 +487,11 @@ impl CoreCollection {
                 .aggregate(pipeline)
                 .with_options(options)
                 .session(session.lock().await.deref_mut())
+                .batch()
                 .await
                 .map_err(MongoError::from)?;
 
-            Ok(CoreSessionCursor::new(
-                cur.with_type(),
-                Arc::clone(&session),
-            ))
+            Ok(CoreSessionBatchCursor::new(cur, Arc::clone(&session)))
         };
 
         spawn(fut).await?

@@ -1,4 +1,4 @@
-use bson::{Document, RawDocumentBuf};
+use bson::{Document, RawArrayBuf, RawDocumentBuf};
 use mongodb::options::UpdateModifications;
 use pyo3::exceptions::PyValueError;
 use pyo3::prelude::*;
@@ -139,10 +139,17 @@ impl Into<RawDocumentBuf> for CoreRawDocument {
 impl<'py> IntoPyObject<'py> for CoreRawDocument {
     type Target = PyBytes;
     type Output = Bound<'py, Self::Target>;
-    type Error = std::convert::Infallible;
+    type Error = PyErr;
+    // type Error = std::convert::Infallible;
 
     fn into_pyobject(self, py: Python<'py>) -> Result<Self::Output, Self::Error> {
-        Ok(PyBytes::new(py, self.0.as_bytes()))
+        // Ok(PyBytes::new(py, self.0.as_bytes()))
+        let data = self.0.as_bytes();
+        let res = PyBytes::new_with(py, data.len(), |buf| {
+            buf.copy_from_slice(data);
+            Ok(())
+        })?;
+        Ok(res)
     }
 }
 
@@ -154,5 +161,36 @@ impl<'py> FromPyObject<'_, 'py> for CoreRawDocument {
         let doc = RawDocumentBuf::from_bytes(data.into())
             .map_err(|e| PyValueError::new_err(e.to_string()))?;
         Ok(CoreRawDocument(doc))
+    }
+}
+
+//////////////////////////////////////////////////////////////////
+pub struct CoreRawArray(RawArrayBuf);
+
+impl From<RawArrayBuf> for CoreRawArray {
+    fn from(value: RawArrayBuf) -> Self {
+        Self(value)
+    }
+}
+
+impl Into<RawArrayBuf> for CoreRawArray {
+    fn into(self) -> RawArrayBuf {
+        self.0
+    }
+}
+
+impl<'py> IntoPyObject<'py> for CoreRawArray {
+    type Target = PyBytes;
+    type Output = Bound<'py, Self::Target>;
+    type Error = PyErr;
+
+    fn into_pyobject(self, py: Python<'py>) -> Result<Self::Output, Self::Error> {
+        let data = self.0.as_bytes();
+        let res = PyBytes::new_with(py, data.len(), |buf| {
+            buf.copy_from_slice(data);
+            Ok(())
+        })?;
+
+        Ok(res)
     }
 }

@@ -200,15 +200,16 @@ class Collection:
         options = self._codec.encode(options)
 
         if session is None:
-            result = await self._core_collection.find_many(filter, options)
+            data = await self._core_collection.find_many(filter, options)
         else:
-            result = await self._core_collection.find_many_with_session(
+            data = await self._core_collection.find_many_with_session(
                 session.core_session,
                 filter,
                 options,
             )
 
-        return [self._codec.decode(d) for d in result]
+        doc = self._codec.decode(data)
+        return list(doc.values())
 
     async def aggregate(
         self,
