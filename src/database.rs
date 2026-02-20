@@ -1,5 +1,5 @@
 use crate::collection::CoreCollection;
-use crate::cursor::{CoreCursor, CoreSessionCursor};
+use crate::cursor::{CoreBatchCursor, CoreSessionBatchCursor};
 use crate::document::{CoreDocument, CorePipeline};
 use crate::error::MongoError;
 use crate::gridfs::CoreGridFsBucket;
@@ -269,7 +269,7 @@ impl CoreDatabase {
         &self,
         pipeline: CorePipeline,
         options: Option<CoreAggregateOptions>,
-    ) -> PyResult<CoreCursor> {
+    ) -> PyResult<CoreBatchCursor> {
         let db = self.db.clone();
 
         let options: Option<AggregateOptions> = options.map(Into::into);
@@ -283,10 +283,11 @@ impl CoreDatabase {
             let cur = db
                 .aggregate(pipeline)
                 .with_options(options)
+                .batch()
                 .await
                 .map_err(MongoError::from)?;
 
-            Ok(CoreCursor::new(cur.with_type()))
+            Ok(CoreBatchCursor::new(cur))
         };
 
         spawn(fut).await?
@@ -297,7 +298,7 @@ impl CoreDatabase {
         session: Py<CoreSession>,
         pipeline: CorePipeline,
         options: Option<CoreAggregateOptions>,
-    ) -> PyResult<CoreSessionCursor> {
+    ) -> PyResult<CoreSessionBatchCursor> {
         let db = self.db.clone();
 
         let options: Option<AggregateOptions> = options.map(Into::into);
@@ -314,13 +315,11 @@ impl CoreDatabase {
                 .aggregate(pipeline)
                 .with_options(options)
                 .session(session.lock().await.deref_mut())
+                .batch()
                 .await
                 .map_err(MongoError::from)?;
 
-            Ok(CoreSessionCursor::new(
-                cur.with_type(),
-                Arc::clone(&session),
-            ))
+            Ok(CoreSessionBatchCursor::new(cur, Arc::clone(&session)))
         };
 
         spawn(fut).await?
