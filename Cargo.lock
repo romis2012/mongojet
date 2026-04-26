@@ -1153,7 +1153,7 @@ dependencies = [
 
 [[package]]
 name = "mongojet"
-version = "0.5.3"
+version = "0.5.4"
 dependencies = [
  "bson 3.1.0",
  "chrono",
