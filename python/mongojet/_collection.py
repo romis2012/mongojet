@@ -99,7 +99,7 @@ class Collection:
         filter = self._codec.encode(filter, optional=False)
 
         if isinstance(update, Sequence):
-            update = ([self._codec.encode(doc) for doc in update],)
+            update = [self._codec.encode(doc) for doc in update]
         else:
             update = self._codec.encode(update, optional=False)
 
@@ -241,7 +241,7 @@ class Collection:
         filter = self._codec.encode(filter, optional=False)
 
         if isinstance(update, Sequence):
-            update = ([self._codec.encode(doc) for doc in update],)
+            update = [self._codec.encode(doc) for doc in update]
         else:
             update = self._codec.encode(update, optional=False)
 
@@ -272,7 +272,7 @@ class Collection:
         filter = self._codec.encode(filter, optional=False)
 
         if isinstance(update, Sequence):
-            update = ([self._codec.encode(doc) for doc in update],)
+            update = [self._codec.encode(doc) for doc in update]
         else:
             update = self._codec.encode(update, optional=False)
 

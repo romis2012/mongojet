@@ -1,5 +1,5 @@
 import collections
-from typing import TypeVar, AsyncIterator, Sequence
+from typing import TypeVar, AsyncIterator, List
 
 from bson import CodecOptions
 
@@ -36,7 +36,7 @@ class Cursor(AsyncIterator[T]):
 
         return self._buff.popleft()
 
-    async def to_list(self, length=None) -> Sequence[T]:
+    async def to_list(self, length=None) -> List[T]:
         if length is not None:
             raise ValueError(
                 'Only None value is supported for partial compatibility with Motor API'
