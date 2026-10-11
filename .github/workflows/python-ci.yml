@@ -20,37 +20,36 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+      
       - name: Setup rust
         uses: dtolnay/rust-toolchain@stable
-      - name: Setup Python ${{ matrix.python-version }}
-        uses: conda-incubator/setup-miniconda@v3
+
+      - name: Setup uv
+        uses: astral-sh/setup-uv@1c37ad07a6a961277cf70c0d37d6f313000f5884 # v10.3.0
         with:
+          enable-cache: true
           python-version: ${{ matrix.python-version }}
-          auto-update-conda: true
-          activate-environment: 'foo'
-      - name: Install dependencies
-        run: |
-          conda install pip
-          pip install -r requirements-dev.txt
-      - name: Build with maturin
-        run: |
-          maturin develop --release
+
       - name: Run Ruff Checks
         run: |
-          ruff check --output-format=github ./python/mongojet ./tests
-          ruff format --check ./python/mongojet ./tests
+          uv run ruff check --output-format=github ./python/mongojet ./tests
+          uv run ruff format --check ./python/mongojet ./tests
+
       - name: Run Mypy Type Checker
         run: |
-          mypy ./python/mongojet ./tests
+          uv run mypy ./python/mongojet ./tests
+      
       - name: Start MongoDB
         uses: supercharge/mongodb-github-action@1.12.1
         with:
           mongodb-version: "4.4"
           mongodb-replica-set: rs1
           mongodb-port: 27117
+      
       - name: Run tests
-        # run: python -m pytest tests --cov=./python/mongojet --cov-report term-missing -s
-        run: python -m pytest tests --cov=./python/mongojet --cov-report xml
+        run: |
+          uv run pytest tests --cov=./python/mongojet --cov-report xml
+      
       - name: Upload coverage
         uses: codecov/codecov-action@v4.0.1
         with:
