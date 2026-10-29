@@ -116,3 +116,12 @@ unfixable = [
     "PT011",   # pytest-raises-too-broad (PT011)
     "C416",    # unnecessary-comprehension (C416)
 ]
+
+"benchmarks/*" = [
+    "ANN001",   
+    "ANN002",   
+    "ANN003",   
+    "ANN201", 
+    "ANN202", 
+    "INP001", 
+]

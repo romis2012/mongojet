@@ -1,10 +1,11 @@
+from __future__ import annotations
+
 import asyncio
 
 import pytest
+from mongojet import Collection as MongojetCollection
 from motor.core import AgnosticCollection as MotorCollection
 from pymongo.asynchronous.collection import AsyncCollection
-
-from mongojet import Collection as MongojetCollection
 
 ITERATIONS = 1
 CONCURENCIES = [
@@ -24,7 +25,7 @@ async def find(
 ):
     async def fn():
         for i in range(iterations):
-            await collection.find_one({'a': i})
+            await collection.find_one({"a": i})
 
     tasks = [fn() for _ in range(concurrency)]
     await asyncio.gather(*tasks)
@@ -37,7 +38,7 @@ async def insert(
 ):
     async def fn():
         for i in range(iterations):
-            await collection.insert_one({'a': i})
+            await collection.insert_one({"a": i})
 
     tasks = [fn() for _ in range(concurrency)]
     await asyncio.gather(*tasks)
@@ -50,7 +51,7 @@ async def cursor_mongojet(
 ):
     async def fn():
         for _ in range(iterations):
-            cur = await collection.aggregate(pipeline=[{'$match': {'a': {'$gt': 10}}}])
+            cur = await collection.aggregate(pipeline=[{"$match": {"a": {"$gt": 10}}}])
             async for _ in cur:
                 pass
 
@@ -65,7 +66,7 @@ async def cursor_motor(
 ):
     async def fn():
         for _ in range(iterations):
-            cur = collection.aggregate(pipeline=[{'$match': {'a': {'$gt': 10}}}])
+            cur = collection.aggregate(pipeline=[{"$match": {"a": {"$gt": 10}}}])
             async for _ in cur:
                 pass
 
@@ -80,7 +81,7 @@ async def cursor_pymongo(
 ):
     async def fn():
         for _ in range(iterations):
-            cur = await collection.aggregate(pipeline=[{'$match': {'a': {'$gt': 10}}}])
+            cur = await collection.aggregate(pipeline=[{"$match": {"a": {"$gt": 10}}}])
             async for _ in cur:
                 pass
 
@@ -89,55 +90,55 @@ async def cursor_pymongo(
 
 
 @pytest.mark.find
-@pytest.mark.parametrize('concurrency', CONCURENCIES)
+@pytest.mark.parametrize("concurrency", CONCURENCIES)
 def test_find_one_mongojet(aio_benchmark, mongojet_read_collection, concurrency):
     aio_benchmark(find, mongojet_read_collection, ITERATIONS, concurrency)
 
 
 @pytest.mark.find
-@pytest.mark.parametrize('concurrency', CONCURENCIES)
+@pytest.mark.parametrize("concurrency", CONCURENCIES)
 def test_find_one_motor(aio_benchmark, motor_read_collection, concurrency):
     aio_benchmark(find, motor_read_collection, ITERATIONS, concurrency)
 
 
 @pytest.mark.find
-@pytest.mark.parametrize('concurrency', CONCURENCIES)
+@pytest.mark.parametrize("concurrency", CONCURENCIES)
 def test_find_one_pymongo(aio_benchmark, pymongo_read_collection, concurrency):
     aio_benchmark(find, pymongo_read_collection, ITERATIONS, concurrency)
 
 
 @pytest.mark.cursor
-@pytest.mark.parametrize('concurrency', CONCURENCIES)
+@pytest.mark.parametrize("concurrency", CONCURENCIES)
 def test_cursor_mongojet(aio_benchmark, mongojet_read_collection, concurrency):
     aio_benchmark(cursor_mongojet, mongojet_read_collection, ITERATIONS, concurrency)
 
 
 @pytest.mark.cursor
-@pytest.mark.parametrize('concurrency', CONCURENCIES)
+@pytest.mark.parametrize("concurrency", CONCURENCIES)
 def test_cursor_motor(aio_benchmark, motor_read_collection, concurrency):
     aio_benchmark(cursor_motor, motor_read_collection, ITERATIONS, concurrency)
 
 
 @pytest.mark.cursor
-@pytest.mark.parametrize('concurrency', CONCURENCIES)
+@pytest.mark.parametrize("concurrency", CONCURENCIES)
 def test_cursor_pymongo(aio_benchmark, pymongo_read_collection, concurrency):
     aio_benchmark(cursor_pymongo, pymongo_read_collection, ITERATIONS, concurrency)
 
 
 @pytest.mark.insert
-@pytest.mark.parametrize('concurrency', CONCURENCIES)
+@pytest.mark.parametrize("concurrency", CONCURENCIES)
 def test_insert_mongojet(aio_benchmark, mongojet_update_collection, concurrency):
     aio_benchmark(insert, mongojet_update_collection, ITERATIONS, concurrency)
 
 
 @pytest.mark.insert
-@pytest.mark.parametrize('concurrency', CONCURENCIES)
+@pytest.mark.parametrize("concurrency", CONCURENCIES)
 def test_insert_motor(aio_benchmark, motor_update_collection, concurrency):
     aio_benchmark(insert, motor_update_collection, ITERATIONS, concurrency)
 
 
 @pytest.mark.insert
-@pytest.mark.parametrize('concurrency', CONCURENCIES)
+@pytest.mark.parametrize("concurrency", CONCURENCIES)
 def test_insert_pymongo(aio_benchmark, pymongo_update_collection, concurrency):
     aio_benchmark(insert, pymongo_update_collection, ITERATIONS, concurrency)
 
